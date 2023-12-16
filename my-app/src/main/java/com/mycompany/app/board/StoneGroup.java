@@ -13,4 +13,8 @@ public class StoneGroup {
     void addStone(Stone stone){
         stones.add(stone);
     }
+
+    public int getBreaths(){
+        return breaths;
+    }
 }
