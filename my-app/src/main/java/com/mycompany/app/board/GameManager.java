@@ -1,0 +1,49 @@
+package com.mycompany.app.board;
+
+public class GameManager {
+    private static GameManager instance;
+
+    private Board board;
+    private int whitePoints = 0;
+    private int blackPoints = 0;
+    private boolean whitePlays = false;
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public void addWhitePoints(int points) {
+        whitePoints += points;
+    }
+
+    public int getWhitePoints() {
+        return whitePoints;
+    }
+
+    public void addBlackPoints(int points) {
+        blackPoints += points;
+    }
+
+    public int getBlackPoints() {
+        return blackPoints;
+    }
+
+    public void nextPlayer() {
+        whitePlays = !whitePlays;
+    }
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance = new GameManager();
+        }
+        return instance;
+    }
+
+    public static void resetInstance() {
+        instance = null;
+    }
+}
