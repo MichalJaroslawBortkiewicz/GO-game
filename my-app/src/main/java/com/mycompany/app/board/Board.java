@@ -38,6 +38,23 @@ public class Board {
 
 
     public void printBoard(){
-        System.out.println("");
+        //String edge = "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+";
+        String boardPrint = "";
+
+
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if(j > 0) { boardPrint += "-"; }
+
+                Stone stone = board[i][j];
+                if(stone == null){ boardPrint += "+"; }
+                if(StoneColor.BLACK.equals(stone.getColor())){ boardPrint += "B"; }
+                else{ boardPrint += "W"; }
+            }
+
+            boardPrint += "\n";
+        }
+
+        System.out.println(boardPrint);
     }
 }
