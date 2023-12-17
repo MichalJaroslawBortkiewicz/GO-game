@@ -1,7 +1,12 @@
 package com.mycompany.app.board;
 
 public class GameManager {
-    private static ThreadLocal<GameManager> instance = new ThreadLocal<GameManager>();
+    private static ThreadLocal<GameManager> instance = new ThreadLocal<GameManager>() {
+        @Override
+        protected GameManager initialValue() {
+            return new GameManager();
+        }
+    };
 
     private Board board;
     private int whitePoints = 0;
@@ -37,13 +42,10 @@ public class GameManager {
     }
 
     public static GameManager getInstance() {
-        if (instance.get() == null) {
-            instance.set(new GameManager());
-        }
         return instance.get();
     }
 
     public static void resetInstance() {
-        instance.set(null);
+        instance.remove();
     }
 }
