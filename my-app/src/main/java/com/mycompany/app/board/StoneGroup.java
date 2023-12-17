@@ -16,15 +16,60 @@ public class StoneGroup {
     }
 
 
-    void addStone(Stone stone){
+    
+    public void addStone(Stone stone){
         breaths += stone.getBreaths();
         stones.add(stone);
     }
+    
+    public void addStones(List<Stone> newStones){
+        stones.addAll(newStones);
+    }
 
+    public void extend(StoneGroup otherStoneGroup){
+        stones.addAll(otherStoneGroup.dieAlone(this));
+    }
+
+
+    public List<Stone> dieAlone(StoneGroup newStoneGroup){
+        for(Stone stone : stones){
+            stone.setStoneGroup(newStoneGroup);            
+        }
+
+        return stones;
+    }
+
+    private void dieAll(){
+        if(calcBreaths() != breaths){ return; }
+
+        for(Stone stone : stones){
+            stone.die();
+        }
+
+        stones.clear();
+    }
+
+    
+    private int calcBreaths(){
+        int tempBreaths = 0;
+        for(Stone stone : stones){
+            tempBreaths += stone.getBreaths();
+        }
+
+        return tempBreaths;
+    }
+
+    public boolean resetBreaths(){
+        int newBreaths = calcBreaths();
+        
+        if(breaths == newBreaths){ return false; }
+        breaths = newBreaths;
+        return true;
+    }
+    
     public void removeBreath(){
         breaths--;
-
-        if(breaths == 0){ die(); }
+        if(breaths == 0){ dieAll(); }
     }
     
     public void addBreath(){
@@ -37,35 +82,11 @@ public class StoneGroup {
     }
     
 
-    public int calcBreaths(){
-        int tempBreaths = 0;
-        for(Stone stone : stones){
-            tempBreaths += stone.getBreaths();
-        }
-
-        return tempBreaths;
-    }
-
-    public boolean resetBreaths(){
-        int newBreaths = calcBreaths();
-
-        if(breaths == newBreaths){ return false; }
-        breaths = newBreaths;
-        return true;
-    }
-
-
-    private void die(){
-        if(calcBreaths() != breaths){ return; }
-
-        for(Stone stone : stones){
-            stone.die();
-        }
-
-        stones.clear();
-    }
-
     public StoneColor getColor(){
         return color;
+    }
+
+    public List<Stone> getStones(){
+        return stones;
     }
 }

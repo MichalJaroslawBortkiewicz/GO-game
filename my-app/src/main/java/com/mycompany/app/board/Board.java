@@ -15,7 +15,7 @@ public class Board {
 
     
     public void addStone(int x, int y, StoneColor color) throws IncorrectStonePlacementException{
-        Stone stone = new Stone(x, y, color);
+        Stone stone = new Stone(x, y, color, this);
         board[y][x] = stone;
     }
 
@@ -44,17 +44,54 @@ public class Board {
 
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
-                if(j > 0) { boardPrint += "-"; }
+                if(j > 0) { boardPrint += '-'; }
 
-                Stone stone = board[i][j];
-                if(stone == null){ boardPrint += "+"; }
-                if(StoneColor.BLACK.equals(stone.getColor())){ boardPrint += "B"; }
-                else{ boardPrint += "W"; }
+                Stone stone = board[j][i];
+                if(stone == null){ boardPrint += '+'; }
+                else if(StoneColor.BLACK.equals(stone.getColor())){ boardPrint += 'B'; }
+                else{ boardPrint += 'W'; }
             }
 
             boardPrint += "\n";
         }
 
         System.out.println(boardPrint);
+    }
+
+    public char[][] getSimplifiedBoard(){
+        char[][] simplifiedBoard = new char[size][size];
+
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                Stone stone = board[j][i];
+
+                if(stone == null){ simplifiedBoard[j][i] = ' '; }
+                else if(StoneColor.BLACK.equals(stone.getColor())){ simplifiedBoard[j][i] = 'B'; }
+                else{ simplifiedBoard[j][i] = 'W'; }
+            }
+        }
+
+        return simplifiedBoard;
+    }
+
+    @Override
+    public String toString(){
+        String boardString = "";
+
+        for(int i = 0; i < size; i++){
+            if(i > 0){ boardString += '\n'; }
+
+            for(int j = 0; j < size; j++){
+                Stone stone = board[j][i];
+
+                if(stone == null){ boardString += ' ';}
+                else if(StoneColor.BLACK.equals(stone.getColor())){ boardString += 'B'; }
+                else{ boardString += 'W'; }
+
+                boardString += ' ';
+            }
+        }
+
+        return boardString;
     }
 }

@@ -7,6 +7,8 @@ public class Stone {
     private StoneGroup stoneGroup;
     private StoneColor color;
 
+
+    private Board tempBoard;
     /*
      private Stone up;
      private Stone down;
@@ -20,6 +22,16 @@ public class Stone {
     private int x;
     private int y;
 
+    Stone(int x, int y, StoneColor color, Board board) throws IncorrectStonePlacementException{
+    this.x = x;
+    this.y = y;
+    this.color = color;
+
+    this.tempBoard = board;
+
+    placeStone();
+    }
+
     Stone(int x, int y, StoneColor color) throws IncorrectStonePlacementException{
         this.x = x;
         this.y = y;
@@ -31,9 +43,10 @@ public class Stone {
     private void placeStone() throws IncorrectStonePlacementException{
         //ArrayList<StoneGroup> allyStoneGroups = new ArrayList<StoneGroup>();
         //ArrayList<StoneGroup> enemyStoneGroups = new ArrayList<StoneGroup>();
-        Board board = GameManager.getInstance().getBoard();
+        Board board = tempBoard; //GameManager.getInstance().getBoard();
         Stone tempNeighbors[] = new Stone[4];
 
+        int allies = 0;
         Boolean allyDie = false;
         Boolean enemyDie = false;
         
@@ -52,10 +65,10 @@ public class Stone {
             if(stone == null){ continue; }
 
             breaths--;
-            /*
             if(stone.getColor().equals(color)){
-                allyStoneGroups.add(stone.getStoneGroup());
+                allies++;
             }
+            /*
             else{
                 enemyStoneGroups.add(stone.getStoneGroup());
             }
@@ -71,6 +84,23 @@ public class Stone {
                 if(stone == null){ continue; }
 
                 stone.addNeighbor(this, Direction.valueOf(i ^ 1));
+                if(!stone.getColor().equals(color)){ continue; }
+
+                StoneGroup otherStoneGroup = stone.getStoneGroup();
+
+                if(stoneGroup == null){ 
+                    stoneGroup = otherStoneGroup;
+                    otherStoneGroup.addStone(this);    
+                    continue;
+                }
+
+                if(otherStoneGroup.equals(stoneGroup)){ continue; }
+
+                stoneGroup.extend(otherStoneGroup);
+            }
+
+            if(stoneGroup == null){
+                stoneGroup = new StoneGroup(this);
             }
 
             return;
@@ -84,15 +114,11 @@ public class Stone {
 
             if(groupBreaths > 0){ continue; }
 
-            if(newGroup.getColor().equals(color)){
-                allyDie = true;
-            }
-            else{
-                enemyDie = true;
-            }
+            if(newGroup.getColor().equals(color)){ allyDie = true; }
+            else{ enemyDie = true; }
         }
 
-        if(allyDie && !enemyDie){
+        if(allyDie && !enemyDie || allies == 0){
             for(Stone stone : neighbors){
                 if(stone == null){ continue; }
                 stone.getStoneGroup().addBreath();
@@ -102,21 +128,45 @@ public class Stone {
 
         for(int i = 0; i < 4; i++){
             Stone stone = neighbors[i];
-            if(stone == null){ continue; }
+            if(stone == null || stone.getColor().equals(color)){ continue; }
+
             stone.getStoneGroup().addBreath();
             stone.addNeighbor(stone, Direction.valueOf(i ^ 1));
-        }        
+        }
+
+        for(int i = 0; i < 4; i++){
+            Stone stone = neighbors[i];
+            if(stone == null || !stone.getColor().equals(color)){ continue; }
+
+            StoneGroup otherStoneGroup = stone.getStoneGroup();
+            otherStoneGroup.addBreath();
+            stone.addNeighbor(stone, Direction.valueOf(i ^ 1));
+
+            if(stoneGroup == null){
+                stoneGroup = otherStoneGroup;
+                stoneGroup.addStone(this);
+                continue;
+            }
+
+            stoneGroup.extend(otherStoneGroup);
+        }   
+        
+        if(stoneGroup == null){
+            stoneGroup = new StoneGroup(this);
+        }
     }
     
     
     public void addNeighbor(Stone stone, Direction direction){
         neighbors[direction.ordinal()] = stone;
         breaths--;
+        stoneGroup.removeBreath();
     }
     
     public void removeNeighbor(Direction direction){
         neighbors[direction.ordinal()] = (Stone)null;
         breaths++;
+        if(stoneGroup != null){ stoneGroup.addBreath(); }
     }
 
     public void die(){
@@ -128,6 +178,7 @@ public class Stone {
             neighbors[i] = (Stone)null;
         }
 
+        tempBoard.removeStone(x, y);
         stoneGroup = (StoneGroup)null;
     }
 
@@ -137,6 +188,10 @@ public class Stone {
 
     public StoneGroup getStoneGroup() {
         return stoneGroup;
+    }
+
+    public void setStoneGroup(StoneGroup stoneGroup){
+        this.stoneGroup = stoneGroup;
     }
 
     public StoneColor getColor(){
