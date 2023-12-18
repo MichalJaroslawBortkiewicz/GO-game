@@ -74,9 +74,26 @@ public class StoneRemovalTest extends StoneTestHelper{
             board.addStone(1, 1, white);
             board.addStone(2, 1, white);
             board.addStone(1, 2, black);
+
             board.addStone(2, 2, black);
 
             assertEquals("  B B \nB     \n  B B ", board.toString());
+
+            List<Stone> stones = getStonesFromBoard(board);
+
+            assertEquals(5, stones.size());
+
+            int breaths[] = {2, 1, 3, 2, 1};
+            int groupSizes[] = {2, 2, 1, 2, 2};
+
+            for(int i = 0; i < 5; i++){
+                Stone stone = stones.get(i);
+                System.out.println(i);
+                assertEquals(breaths[i], stone.getBreaths());
+                assertEquals(3, stone.getStoneGroup().getBreaths());
+                assertEquals(groupSizes[i], stone.getStoneGroup().getStones().size());
+            }
+
         }
         catch(IncorrectStonePlacementException ex){
             assertTrue( false );
@@ -96,9 +113,9 @@ public class StoneRemovalTest extends StoneTestHelper{
             board.addStone(3, 1, black);
             board.addStone(1, 2, white);
             board.addStone(2, 2, black);
-            board.printBoard();
+
             board.addStone(1, 1, black);
-            board.printBoard();
+
 
             assertEquals("  W B   \nW B   B \n  W B   \n        ", board.toString());
             
@@ -121,4 +138,39 @@ public class StoneRemovalTest extends StoneTestHelper{
             assertTrue( false );
         }
     }
+
+    @Test
+    public void stoneRemovalTest5(){
+        Board board = new Board(3);
+
+        try{
+            for(int i = 0; i < 3; i++){
+                for(int j = 0; j < 3; j++){
+                    if(i == 1 && j == 1 || i == 2 && j == 2){ continue; }
+                    board.addStone(i, j, white);
+                }
+            }
+            board.printBoard();
+
+            board.addStone(2, 2, white);
+            board.addStone(1, 1, black);
+
+
+            assertEquals("      \n  B   \n      ", board.toString());
+
+            List<Stone> stones = getStonesFromBoard(board);
+    
+            assertEquals(1, stones.size());
+
+            Stone stone = stones.get(0);
+            assertEquals(4, stone.getBreaths());
+            assertEquals(4, stone.getStoneGroup().getBreaths());
+            assertEquals(1, stone.getStoneGroup().getStones().size());
+
+        }
+        catch(IncorrectStonePlacementException ex){
+            assertTrue( false );
+        }
+    }
+
 }

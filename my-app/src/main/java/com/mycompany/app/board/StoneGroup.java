@@ -27,6 +27,8 @@ public class StoneGroup {
     }
 
     public void extend(StoneGroup otherStoneGroup){
+        if(this == otherStoneGroup){ return; }
+        breaths += otherStoneGroup.getBreaths();
         stones.addAll(otherStoneGroup.dieAlone(this));
     }
 
@@ -41,6 +43,15 @@ public class StoneGroup {
 
     private void dieAll(){
         if(calcBreaths() != breaths){ return; }
+
+        GameManager instance = GameManager.getInstance();
+
+        if(StoneColor.BLACK.equals(color)){
+            instance.addWhitePoints(stones.size());
+        }
+        else{
+            instance.addBlackPoints(stones.size());
+        }
 
         for(Stone stone : stones){
             stone.die();

@@ -44,10 +44,6 @@ public class Stone {
     }
 
     private void placeStone() throws IncorrectStonePlacementException{
-        //ArrayList<StoneGroup> allyStoneGroups = new ArrayList<StoneGroup>();
-        //ArrayList<StoneGroup> enemyStoneGroups = new ArrayList<StoneGroup>();
-        //Stone tempNeighbors[] = new Stone[4];
-
         Boolean allyDie = false;
         Boolean enemyDie = false;
         Boolean hasAllies = false;
@@ -70,6 +66,8 @@ public class Stone {
             if(stone.getColor().equals(color)){ hasAllies = true; }
         }
 
+        stoneGroup = new StoneGroup(this);
+
         if(breaths > 0){
             for(int i = 0; i < 4; i++){
                 Stone stone = neighbors[i];
@@ -78,21 +76,7 @@ public class Stone {
                 stone.addNeighbor(this, Direction.valueOf(i ^ 1));
                 if(!stone.getColor().equals(color)){ continue; }
 
-                StoneGroup otherStoneGroup = stone.getStoneGroup();
-
-                if(stoneGroup == null){ 
-                    stoneGroup = otherStoneGroup;
-                    otherStoneGroup.addStone(this);    
-                    continue;
-                }
-
-                if(otherStoneGroup == stoneGroup){ continue; }
-
-                stoneGroup.extend(otherStoneGroup);
-            }
-
-            if(stoneGroup == null){
-                stoneGroup = new StoneGroup(this);
+                stoneGroup.extend(stone.getStoneGroup());
             }
 
             return;
@@ -135,18 +119,8 @@ public class Stone {
             otherStoneGroup.addBreath();
             stone.addNeighbor(stone, Direction.valueOf(i ^ 1));
 
-            if(stoneGroup == null){
-                stoneGroup = otherStoneGroup;
-                stoneGroup.addStone(this);
-                continue;
-            }
-
             stoneGroup.extend(otherStoneGroup);
         }   
-        
-        if(stoneGroup == null){
-            stoneGroup = new StoneGroup(this);
-        }
     }
     
     
