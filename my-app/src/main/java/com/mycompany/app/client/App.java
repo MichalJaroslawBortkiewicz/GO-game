@@ -11,6 +11,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
+    Client client;
+
 
     @Override
     public void start(Stage stage) {
@@ -54,9 +56,9 @@ public class App extends Application {
 
         rootGroup.getChildren().add(inputGridPane);
 
-        Scene scene = new Scene(rootGroup);
+        Scene menu = new Scene(rootGroup);
 
-        stage.setScene(scene);
+        stage.setScene(menu);
         stage.setX(0);
         stage.setY(5);
         stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
@@ -76,8 +78,7 @@ public class App extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            System.out.println(boardSize);
-            System.out.println(withBot);
+            client = new Client(boardSize, withBot);
         }
     }
 
