@@ -26,13 +26,13 @@ public class Stone {
     private int y;
 
     Stone(int x, int y, StoneColor color, Board board) throws IncorrectStonePlacementException{
-    this.x = x;
-    this.y = y;
-    this.color = color;
+        this.x = x;
+        this.y = y;
+        this.color = color;
 
-    this.board = board;
+        this.board = board;
 
-    placeStone();
+        placeStone();
     }
 
     Stone(int x, int y, StoneColor color) throws IncorrectStonePlacementException{
@@ -48,9 +48,9 @@ public class Stone {
         //ArrayList<StoneGroup> enemyStoneGroups = new ArrayList<StoneGroup>();
         //Stone tempNeighbors[] = new Stone[4];
 
-        int allies = 0;
         Boolean allyDie = false;
         Boolean enemyDie = false;
+        Boolean hasAllies = false;
         
         for(Direction direction : Direction.values()){
             Stone stone;
@@ -67,21 +67,8 @@ public class Stone {
             if(stone == null){ continue; }
 
             breaths--;
-            if(stone.getColor().equals(color)){
-                allies++;
-            }
-            /*
-            else{
-                enemyStoneGroups.add(stone.getStoneGroup());
-            }
-            */
+            if(stone.getColor().equals(color)){ hasAllies = true; }
         }
-
-        if(breaths < 0){
-            System.out.println("NIE DZIAŁA");
-            return;
-        }
-
 
         if(breaths > 0){
             for(int i = 0; i < 4; i++){
@@ -123,7 +110,7 @@ public class Stone {
             else{ enemyDie = true; }
         }
 
-        if(allyDie || allies == 0 && !enemyDie ){
+        if(allyDie || !hasAllies && !enemyDie ){
             for(Stone stone : neighbors){
                 if(stone == null){ continue; }
                 stone.getStoneGroup().addBreath();
@@ -137,7 +124,7 @@ public class Stone {
             if(stone == null || stone.getColor().equals(color)){ continue; }
 
             stone.getStoneGroup().addBreath();
-            stone.addNeighbor(stone, Direction.valueOf(i ^ 1));
+            stone.addNeighbor(this, Direction.valueOf(i ^ 1));
         }
 
         for(int i = 0; i < 4; i++){
