@@ -1,5 +1,7 @@
 package com.mycompany.app.board;
 
+import com.mycompany.app.board.exceptions.IncorrectStonePlacementException;
+
 //import java.lang.reflect.Array;
 //import java.util.ArrayList;
 
@@ -75,6 +77,11 @@ public class Stone {
             */
         }
 
+        if(breaths < 0){
+            System.out.println("NIE DZIAŁA");
+            return;
+        }
+
 
         if(breaths > 0){
             neighbors = tempNeighbors;
@@ -94,7 +101,7 @@ public class Stone {
                     continue;
                 }
 
-                if(otherStoneGroup.equals(stoneGroup)){ continue; }
+                if(otherStoneGroup == stoneGroup){ continue; }
 
                 stoneGroup.extend(otherStoneGroup);
             }
@@ -125,6 +132,8 @@ public class Stone {
             }
             throw new IncorrectStonePlacementException();
         }
+
+        neighbors = tempNeighbors;
 
         for(int i = 0; i < 4; i++){
             Stone stone = neighbors[i];

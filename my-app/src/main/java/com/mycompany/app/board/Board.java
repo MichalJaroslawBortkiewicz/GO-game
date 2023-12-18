@@ -1,5 +1,7 @@
 package com.mycompany.app.board;
 
+import com.mycompany.app.board.exceptions.IncorrectStonePlacementException;
+
 //import java.util.ArrayList;
 //import java.util.List;
 
@@ -16,7 +18,7 @@ public class Board {
     
     public void addStone(int x, int y, StoneColor color) throws IncorrectStonePlacementException{
         Stone stone = new Stone(x, y, color, this);
-        board[y][x] = stone;
+        board[x][y] = stone;
     }
 
 
@@ -28,12 +30,12 @@ public class Board {
             throw new OutOfBorderException();
         }
 
-        return board[y][x];
+        return board[x][y];
     }
 
 
     public void removeStone(int x, int y){
-        board[y][x] = (Stone)null;
+        board[x][y] = (Stone)null;
     }
 
 

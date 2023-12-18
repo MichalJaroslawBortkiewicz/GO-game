@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class BoardTest {
+import com.mycompany.app.board.exceptions.IncorrectStonePlacementException;
+
+public class StoneTest {
     StoneColor black = StoneColor.BLACK;
     StoneColor white = StoneColor.WHITE;
 
