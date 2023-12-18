@@ -1,6 +1,7 @@
 package com.mycompany.app.board;
 
 import com.mycompany.app.board.exceptions.IncorrectStonePlacementException;
+import com.mycompany.app.board.exceptions.OutOfBorderException;
 
 //import java.lang.reflect.Array;
 //import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class Stone {
     private StoneColor color;
 
 
-    private Board tempBoard;
+    private Board board;
     /*
      private Stone up;
      private Stone down;
@@ -29,7 +30,7 @@ public class Stone {
     this.y = y;
     this.color = color;
 
-    this.tempBoard = board;
+    this.board = board;
 
     placeStone();
     }
@@ -45,8 +46,7 @@ public class Stone {
     private void placeStone() throws IncorrectStonePlacementException{
         //ArrayList<StoneGroup> allyStoneGroups = new ArrayList<StoneGroup>();
         //ArrayList<StoneGroup> enemyStoneGroups = new ArrayList<StoneGroup>();
-        Board board = tempBoard; //GameManager.getInstance().getBoard();
-        Stone tempNeighbors[] = new Stone[4];
+        //Stone tempNeighbors[] = new Stone[4];
 
         int allies = 0;
         Boolean allyDie = false;
@@ -62,7 +62,7 @@ public class Stone {
                 continue;
             }
 
-            tempNeighbors[direction.ordinal()] = stone;
+            neighbors[direction.ordinal()] = stone;
 
             if(stone == null){ continue; }
 
@@ -84,8 +84,6 @@ public class Stone {
 
 
         if(breaths > 0){
-            neighbors = tempNeighbors;
-
             for(int i = 0; i < 4; i++){
                 Stone stone = neighbors[i];
                 if(stone == null){ continue; }
@@ -113,7 +111,7 @@ public class Stone {
             return;
         }
 
-        for(Stone stone : tempNeighbors){
+        for(Stone stone : neighbors){
             if(stone == null){ continue; }
             StoneGroup newGroup = stone.getStoneGroup();
             newGroup.removeBreath();
@@ -125,15 +123,14 @@ public class Stone {
             else{ enemyDie = true; }
         }
 
-        if(allyDie && !enemyDie || allies == 0){
+        if(allyDie || allies == 0 && !enemyDie ){
             for(Stone stone : neighbors){
                 if(stone == null){ continue; }
                 stone.getStoneGroup().addBreath();
+                stone = (Stone)null;
             }
             throw new IncorrectStonePlacementException();
         }
-
-        neighbors = tempNeighbors;
 
         for(int i = 0; i < 4; i++){
             Stone stone = neighbors[i];
@@ -187,7 +184,7 @@ public class Stone {
             neighbors[i] = (Stone)null;
         }
 
-        tempBoard.removeStone(x, y);
+        board.removeStone(x, y);
         stoneGroup = (StoneGroup)null;
     }
 

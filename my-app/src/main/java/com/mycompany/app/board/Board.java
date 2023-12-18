@@ -1,6 +1,7 @@
 package com.mycompany.app.board;
 
 import com.mycompany.app.board.exceptions.IncorrectStonePlacementException;
+import com.mycompany.app.board.exceptions.OutOfBorderException;
 
 //import java.util.ArrayList;
 //import java.util.List;
@@ -15,6 +16,7 @@ public class Board {
         this.board = new Stone[size][size];
     }
 
+
     
     public void addStone(int x, int y, StoneColor color) throws IncorrectStonePlacementException{
         Stone stone = new Stone(x, y, color, this);
@@ -22,15 +24,19 @@ public class Board {
     }
 
 
-    public Stone getStone(int x, int y, Direction direction) throws OutOfBorderException{
-        x += direction.getX();
-        y += direction.getY();
-
+    public Stone getStone(int x, int y) throws OutOfBorderException{
         if (x < 0 || y < 0 || x >= size || y >= size){
             throw new OutOfBorderException();
         }
 
         return board[x][y];
+    }
+
+    public Stone getStone(int x, int y, Direction direction) throws OutOfBorderException{
+        x += direction.getX();
+        y += direction.getY();
+
+        return getStone(x, y);
     }
 
 
@@ -95,5 +101,9 @@ public class Board {
         }
 
         return boardString;
+    }
+
+    public int getSize() {
+        return size;
     }
 }
