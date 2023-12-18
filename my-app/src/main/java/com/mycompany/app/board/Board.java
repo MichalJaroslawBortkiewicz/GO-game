@@ -46,13 +46,11 @@ public class Board {
 
 
     public void printBoard(){
-        //String edge = "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+";
         String boardPrint = "";
-
 
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
-                if(j > 0) { boardPrint += '-'; }
+                if(j > 0) { boardPrint += ' '; }
 
                 Stone stone = board[j][i];
                 if(stone == null){ boardPrint += '+'; }
