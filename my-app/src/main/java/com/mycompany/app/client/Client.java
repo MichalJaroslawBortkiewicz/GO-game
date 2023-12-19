@@ -38,6 +38,12 @@ public class Client {
         return board;
     }
 
+    public void waitForOpponentsMove() throws IOException {
+        OpponentsMoveReceiver receiver = new OpponentsMoveReceiver(fromServer, size);
+        Thread thread = new Thread(receiver);
+        thread.start();
+    }
+
     public boolean doIStart() throws IOException {
         return fromServer.readBoolean();
     }

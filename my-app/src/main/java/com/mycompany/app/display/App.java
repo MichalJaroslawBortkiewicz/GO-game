@@ -1,27 +1,18 @@
 package com.mycompany.app.display;
 
-import java.io.IOException;
-
-import com.mycompany.app.client.Client;
-import com.mycompany.app.client.exceptions.FromServerException;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
-    private static App instance;
-
-    private boolean myTurn;
     private Stage stage;
     private Scene menu;
-    private Client client;
 
     @Override
     public void start(Stage stage) {
-        instance = this;
         this.stage = stage;
+        AppManager.getInstance().setApp(this);
 
         stage.setTitle("GO");
 
@@ -36,49 +27,14 @@ public class App extends Application {
         stage.show();
     }
 
-    public void startGame(int size) {
-        System.out.println("Waiting for player to join...");
-        try {
-            myTurn = client.doIStart();
-            System.out.println("I'm the " + (myTurn ? "first" : "second") + " player");
-        } catch (IOException ex) {
-            System.err.println("Connection with server failed: " + ex.getMessage());
-        }
-        stage.setScene(new Scene(new GameScene(size)));
+    public GameScene startGame(int size) {
+        GameScene gameScene = new GameScene(size);
+        stage.setScene(new Scene(gameScene));
+        return gameScene;
     }
 
     public void endGame() {
         stage.setScene(menu);
-    }
-
-    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
-    public char[][] sendMove(int i, int j)
-    {
-        if (!myTurn) { return null; }
-        
-        char[][] boardState = null;
-        try {
-            System.out.println("Asking client to send move");
-            boardState = client.sendMove(i, j);
-            myTurn = false;
-        } catch (IOException ex) {
-            System.err.println("Connection with server failed: " + ex.getMessage());
-        } catch (FromServerException ex) {
-            System.err.println("Server send exception: " + ex.getMessage());
-        }
-        return boardState;
-    }
-
-    public void setClient(Client client) {
-        instance.client = client;
-    }
-
-    public Client getClient() {
-        return instance.client;
-    }
-
-    public static App getApp() {
-        return instance;
     }
 
     public static void main( String[] args ) {
