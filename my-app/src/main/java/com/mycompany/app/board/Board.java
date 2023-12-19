@@ -19,6 +19,10 @@ public class Board {
 
     
     public void addStone(int x, int y, StoneColor color) throws IncorrectStonePlacementException{
+        if(board[x][y] != null){
+            throw new IncorrectStonePlacementException();
+        }
+
         Stone stone = new Stone(x, y, color, this);
         board[x][y] = stone;
     }
