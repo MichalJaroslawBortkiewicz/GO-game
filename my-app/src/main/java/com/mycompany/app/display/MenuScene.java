@@ -55,7 +55,7 @@ public class MenuScene extends Group {
 
         @Override
         public void handle(ActionEvent event) {
-            App.getApp().startGame(boardSize);
+            AppManager.getInstance().startGame(boardSize);
             try {
                 AppManager.getInstance().setClient(new Client(boardSize, withBot));
                 AppManager.getInstance().startGame(boardSize);

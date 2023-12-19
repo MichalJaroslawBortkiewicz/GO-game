@@ -59,7 +59,7 @@ public class GameScene extends Group {
         getChildren().addAll(board, lines, stones);
     }
 
-    private void rearrange(char[][] boardDataState) {
+    public void rearrange(char[][] boardDataState) {
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
                 String colorName = String.valueOf(boardDataState[i][j]);
@@ -103,7 +103,7 @@ public class GameScene extends Group {
         }
 
         private void sendMove() {
-            char[][] boardDataState = App.getApp().sendMove(x, y);
+            char[][] boardDataState = AppManager.getInstance().sendMove(x, y);
             if (boardDataState != null) {
                 rearrange(boardDataState);
             }
