@@ -3,24 +3,36 @@ package com.mycompany.app.server;
 import java.net.Socket;
 
 public class SessionWithBot implements Session {
-    Socket player;
+    private Socket player;
+    private int size;
 
     @Override
     public void run() {
         // TODO Auto-generated method stub
-        //throw new UnsupportedOperationException("Unimplemented method 'run'");
-        System.out.println("Not implemented run");
+        throw new UnsupportedOperationException("Unimplemented method 'run'");
     }
 
     @Override
-    public void startGame(int size) {
+    public void startGame() {
         // TODO Auto-generated method stub
-        //throw new UnsupportedOperationException("Unimplemented method 'startGame'");
+        throw new UnsupportedOperationException("Unimplemented method 'startGame'");
+    }
+
+    @Override
+    public void addStone(int x, int y, int player) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addStone'");
+    }
+
+    @Override
+    public void endGame() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'endGame'");
     }
     
     public SessionWithBot(Socket player, int size)
     {
         this.player = player;
-        startGame(size);
+        this.size = size;
     }
 }

@@ -18,20 +18,28 @@ public class Client {
     public char[][] sendMove(int x, int y) throws IOException, FromServerException{
         toServer.writeInt(x);
         toServer.writeInt(y);
+        System.out.println("Client send move");
 
         if (fromServer.readBoolean()) {
             throw new FromServerException(fromServer.readAllBytes());
         }
+
+        System.out.println("No exception from server");
 
         char[][] board = new char[size][size];
 
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
                 board[i][j] = fromServer.readChar();
+                System.out.println("Read " + i + " " + j + " board field");
             }
         }
 
         return board;
+    }
+
+    public boolean doIStart() throws IOException {
+        return fromServer.readBoolean();
     }
 
     public Client(int size, boolean withBot) throws IOException, FromServerException {

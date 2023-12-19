@@ -37,6 +37,13 @@ public class App extends Application {
     }
 
     public void startGame(int size) {
+        System.out.println("Waiting for player to join...");
+        try {
+            myTurn = client.doIStart();
+            System.out.println("I'm the " + (myTurn ? "first" : "second") + " player");
+        } catch (IOException ex) {
+            System.err.println("Connection with server failed: " + ex.getMessage());
+        }
         stage.setScene(new Scene(new GameScene(size)));
     }
 
@@ -52,6 +59,7 @@ public class App extends Application {
         }
         char[][] boardState = null;
         try {
+            System.out.println("Asking client to send move");
             boardState = client.sendMove(i, j);
             myTurn = false;
         } catch (IOException ex) {

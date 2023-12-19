@@ -16,12 +16,12 @@ public final class Server {
     private Server() {
         try {
             ServerSocket serverSocket = new ServerSocket(8000);
-            System.out.println(new Date() + ":     Server started at socket 8000\n");
+            System.out.println(new Date() + ":     Server started at socket 8000");
             int sessionNum = 1;
             int sessions[] = {0, 0, 0};
             Socket players[] = {null, null, null};
             while (true) {
-                System.out.println(new Date() + ":     Waiting for players\n");
+                System.out.println(new Date() + ":     Waiting for players");
 
                 Socket player = serverSocket.accept();
                 DataInputStream inputStream = new DataInputStream(player.getInputStream());
@@ -48,20 +48,20 @@ public final class Server {
                     continue;
                 }
                 if (inputStream.readBoolean()) {
-                    System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're playing with bot. Their IP address is " + player.getLocalAddress().getHostAddress() + "\n");
+                    System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're playing with bot. Their IP address is " + player.getLocalAddress().getHostAddress());
                     Session task = new SessionWithBot(player, size);
-                    System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...\n");
+                    System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...");
                     Thread thread = new Thread(task);
                     thread.start();
                 }
                 else if (sessions[index] == 0) {
-                    System.out.println(new Date() + ":     first player joined session " + sessionNum + ". Their IP address is " + player.getLocalAddress().getHostAddress() + "\n");
+                    System.out.println(new Date() + ":     first player joined session " + sessionNum + ". Their IP address is " + player.getLocalAddress().getHostAddress());
                     sessions[index] = sessionNum++;
                     players[index] = player;
                 }
                 else {
                     Session task = new TwoPlayerSession(players[index], player, size);
-                    System.out.println(new Date() + ":     Starting a thread for session " + sessions[index] + "...\n");
+                    System.out.println(new Date() + ":     Starting a thread for session " + sessions[index] + "...");
                     Thread thread = new Thread(task);
                     thread.start();
                     sessions[index] = 0;
