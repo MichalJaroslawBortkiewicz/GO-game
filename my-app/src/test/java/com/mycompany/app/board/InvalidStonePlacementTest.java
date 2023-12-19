@@ -129,4 +129,18 @@ public class InvalidStonePlacementTest extends StoneTestHelper{
 
         }
     }
+
+    @Test
+    public void invalidStonePlacementTest5(){
+        Board board = new Board(3);
+
+        try {
+            board.addStone(0, 0, black);
+            board.addStone(0, 0, white);    
+            assertTrue(false);
+        }
+        catch (IncorrectStonePlacementException ex){
+            
+        }
+    }
 }
