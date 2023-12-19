@@ -140,7 +140,11 @@ public class InvalidStonePlacementTest extends StoneTestHelper{
             assertTrue(false);
         }
         catch (IncorrectStonePlacementException ex){
-            
+            Stone stone = getStonesFromBoard(board).get(0);
+            assertEquals(2, stone.getBreaths());
+            assertEquals(2, stone.getStoneGroup().getBreaths());
+            assertEquals(1, stone.getStoneGroup().getStones().size());
+            assertEquals(StoneColor.BLACK, stone.getColor());
         }
     }
 }
