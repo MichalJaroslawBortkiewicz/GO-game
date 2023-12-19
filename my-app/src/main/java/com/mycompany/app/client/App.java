@@ -78,7 +78,7 @@ public class App extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            client = new Client(boardSize, withBot);
+            //client = new Client(boardSize, withBot);
         }
     }
 

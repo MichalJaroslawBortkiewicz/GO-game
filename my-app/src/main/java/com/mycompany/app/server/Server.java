@@ -1,5 +1,6 @@
 package com.mycompany.app.server;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,11 +8,6 @@ import java.net.Socket;
 import java.util.Date;
 
 public final class Server {
-
-    public static final int WAIT = 0;
-    public static final int BLACKPLAYER = 1;
-    public static final int WHITEPLAYER = 2;
-
     public static void main(String[] args) {
         new Server();
     }
@@ -22,35 +18,56 @@ public final class Server {
             ServerSocket serverSocket = new ServerSocket(8000);
             System.out.println(new Date() + ":     Server started at socket 8000\n");
             int sessionNum = 1;
+            int sessions[] = {0, 0, 0};
+            Socket players[] = {null, null, null};
             while (true) {
-                System.out.println(new Date() + ":     Waiting for players to join session " + sessionNum + "\n");
+                System.out.println(new Date() + ":     Waiting for players\n");
 
-                Socket firstPlayer = serverSocket.accept();
-                System.out.println(new Date() + ":     Player 1 joined session " + sessionNum + ". Player 1's IP address " + firstPlayer.getInetAddress().getHostAddress() + "\n");
-
-                new DataOutputStream(firstPlayer.getOutputStream()).writeInt(WAIT);
-
-                Socket secondPlayer = serverSocket.accept();
-                System.out.println(new Date() + ":     Player 2 joined session " + sessionNum + ". Player 2's IP address " + secondPlayer.getInetAddress().getHostAddress() + "\n");
-
-                int player1;
-                int player2;
-                if(Math.random() < 0.5) {
-                    player1 = BLACKPLAYER;
-                    player2 = WHITEPLAYER;
+                Socket player = serverSocket.accept();
+                DataInputStream inputStream = new DataInputStream(player.getInputStream());
+                DataOutputStream outputStream = new DataOutputStream(player.getOutputStream());
+                int size = inputStream.readInt();
+                int index;
+                switch (size) {
+                case 9:
+                    index = 0;
+                    break;
+                case 13:
+                    index = 1;
+                    break;
+                case 19:
+                    index = 2;
+                    break;
+                default:
+                    index = -1;
+                    break;
+                }
+                if (index == -1) {
+                    outputStream.writeBoolean(true);
+                    outputStream.writeBytes("Invalid board size!");
+                    continue;
+                }
+                if (inputStream.readBoolean()) {
+                    System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're playing with bot. Their IP address is " + player.getLocalAddress().getHostAddress() + "\n");
+                    Session task = new SessionWithBot(player, size);
+                    System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...\n");
+                    Thread thread = new Thread(task);
+                    thread.start();
+                }
+                else if (sessions[index] == 0) {
+                    System.out.println(new Date() + ":     first player joined session " + sessionNum + ". Their IP address is " + player.getLocalAddress().getHostAddress() + "\n");
+                    sessions[index] = sessionNum++;
+                    players[index] = player;
                 }
                 else {
-                    player1 = WHITEPLAYER;
-                    player2 = BLACKPLAYER;
+                    Session task = new TwoPlayerSession(players[index], player, size);
+                    System.out.println(new Date() + ":     Starting a thread for session " + sessions[index] + "...\n");
+                    Thread thread = new Thread(task);
+                    thread.start();
+                    sessions[index] = 0;
+                    players[index] = null;
                 }
-                new DataOutputStream(firstPlayer.getOutputStream()).writeInt(player1);
-                new DataOutputStream(secondPlayer.getOutputStream()).writeInt(player2);
-
-
-                System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...\n");
-                Session task = new Session(firstPlayer, secondPlayer);
-                Thread t1 = new Thread(task);
-                t1.start();
+                outputStream.writeBoolean(false);
             }
         } catch (IOException ex) {
             System.err.println(ex);

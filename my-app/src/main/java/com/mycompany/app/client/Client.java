@@ -7,33 +7,36 @@ import java.net.Socket;
 
 import com.mycompany.app.client.exceptions.FromServerException;
 
-public class Client implements Runnable {
+public class Client {
     Socket socket;
 
     private DataInputStream fromServer;
     private DataOutputStream toServer;
 
-    private void connectToServer() {
-        try {
-            socket = new Socket("localhost", 8000);
-            fromServer = new DataInputStream(socket.getInputStream());
-            toServer = new DataOutputStream(socket.getOutputStream());
-        }
-        catch (IOException ex) {
-            System.err.println(ex);
+    private int size;
+
+    public char[][] sendMove(int x, int y) throws IOException, FromServerException{
+        toServer.writeInt(x);
+        toServer.writeInt(y);
+
+        if (fromServer.readBoolean()) {
+            throw new FromServerException(fromServer.readAllBytes());
         }
 
-        Thread thread = new Thread(this);
-        thread.start();
-    }
+        char[][] board = new char[size][size];
 
-    @Override
-    public void run() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'run'");
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                board[i][j] = fromServer.readChar();
+            }
+        }
+
+        return board;
     }
 
     public Client(int size, boolean withBot) throws IOException, FromServerException {
+        this.size = size;
+
         socket = new Socket("localhost", 8000);
         fromServer = new DataInputStream(socket.getInputStream());
         toServer = new DataOutputStream(socket.getOutputStream());
@@ -41,10 +44,8 @@ public class Client implements Runnable {
         toServer.writeInt(size);
         toServer.writeBoolean(withBot);
 
-        int response = fromServer.readInt();
-
-        if (response == -1) {
-            throw new FromServerException();
+        if (fromServer.readBoolean()) {
+            throw new FromServerException(fromServer.readAllBytes());
         }
     }
 }
