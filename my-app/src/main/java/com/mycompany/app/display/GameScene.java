@@ -1,76 +1,153 @@
 package com.mycompany.app.display;
 
+import com.mycompany.app.board.StoneColor;
+
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class GameScene extends Group {
-    final Field[][] board;
-    final int size;
+    private final Field[][] boardData;
+    private final int size;
 
-    private void rearrange(char[][] boardState) {
-        for(int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++) {
-                switch (boardState[i][j]) {
-                case 'W':
-                    board[i][j].setFill(Color.WHITE);
-                    break;
-                case 'B':
-                    board[i][j].setFill(Color.BLACK);
-                    break;
-                default:
-                    board[i][j].setFill(Color.GREY);
-                    break;
-                }
-            }
-        }
-    }
+    private StoneColor stoneColor = StoneColor.WHITE;
 
+    private int borderWidth = 20;
+    private int gridWidth = 40;
+
+    
     public GameScene(int size) {
         this.size = size;
-        this.board = new Field[size][size];
+        this.boardData = new Field[size][size];
+        
+        int boardLength = 2 * borderWidth + gridWidth * (size - 1);
 
         Group lines = new Group();
         Group stones = new Group();
 
-        Rectangle rectangle = new Rectangle(655 + size * 5, 655 + size * 5);
-        rectangle.setFill(Color.gray(0.7));
+        //Scene scene = get();
+        //(scene.getWidth() - boardLength) / 2, (scene.getHeight() - boardLength) / 2
+        
+        Rectangle board = new Rectangle(boardLength, boardLength);
+        board.setFill(Color.KHAKI);
+        board.setStroke(Color.BROWN);
+        board.setStrokeWidth(3);
 
         for(int i = 0; i < size; i++) {
-            lines.getChildren().add(new Line(15, 30 + 300f/size + (600f/size + 5) * i, 640 + size * 5, 30 + 300f/size + (600f/size + 5) * i));
-            lines.getChildren().add(new Line(30 +300/size + (600f/size + 5) * i, 15, 30 + 300f/size + (600f/size + 5) * i, 640 + size * 5));
+            double start = borderWidth;
+            double end = start + (size - 1) * gridWidth;
+            double shift = borderWidth + i * gridWidth;
+
+            Line vLine = new Line(shift, start, shift, end);
+            Line hLine = new Line(start, shift, end, shift);
+
+            vLine.setStrokeWidth(2);
+            hLine.setStrokeWidth(2);
+
+
+            lines.getChildren().add(vLine);
+            lines.getChildren().add(hLine);
+
+
             for(int j = 0; j < size; j++) {
-                Field field = new Field(i, j, 300f/size);
+                Field field = new Field(i, j, 0.4 * gridWidth);
                 stones.getChildren().add(field);
-                board[i][j] = field;
+                boardData[i][j] = field;
             }
         }
 
-        getChildren().addAll(rectangle, lines, stones);
+        getChildren().addAll(board, lines, stones);
     }
 
-    final class Field extends Circle {
-        int i;
-        int j;
+    private void rearrange(char[][] boardDataState) {
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                String colorName = String.valueOf(boardDataState[i][j]);
+                boardData[i][j].changeColor(colorName);
+            }
+        }
+    }
+
+
+    private final class Field extends Circle {
+        int x;
+        int y;
+
+       FieldColor fieldColor = FieldColor.E;
+        
+        public Field(int x, int y, double r) {
+            this.x = x;
+            this.y = y;
+
+            setRadius(r);
+            setCenterX(borderWidth + x * gridWidth);
+            setCenterY(borderWidth + y * gridWidth);
+            setFill(Color.TRANSPARENT);
+            setOpacity(0);
+            setStrokeWidth(2);
+            setStroke(Color.gray(0.2));
+
+            
+            Boolean isBlack = false;
+            
+
+            setOnMouseEntered(event -> {
+                if(!FieldColor.E.equals(fieldColor)){ return; }
+                setOpacity(0.5);
+                setFill(stoneColor.getColor());
+            });
+            setOnMouseExited(event -> {
+                if(!FieldColor.E.equals(fieldColor)){ return; }
+                setFill(fieldColor.getColor());
+                setOpacity(0);
+            });
+
+            setOnMouseClicked(event -> {
+                changeColor(isBlack ? "B" : "W");
+            });
+
+
+
+            //setOnMouseClicked(event -> sendMove());
+        }
 
         private void sendMove() {
-            char[][] boardState = App.getApp().sendMove(i, j);
-            if (boardState != null) {
-                rearrange(boardState);
+            char[][] boardDataState = App.getApp().sendMove(x, y);
+            if (boardDataState != null) {
+                rearrange(boardDataState);
             }
         }
 
-        public Field(int i, int j, float r) {
-            this.i = i;
-            this.j = j;
-            float gap = 2 * r + 5;
-            setRadius(r);
-            setCenterX(30 + r + i * gap);
-            setCenterY(30 + r + j * gap);
-            setFill(Color.TRANSPARENT);
-            setOnMouseClicked(event -> sendMove());
+        private void changeColor(String colorName){
+            fieldColor = FieldColor.valueOf(colorName);
+            setFill(fieldColor.getColor());
+            if(FieldColor.E.equals(fieldColor)){
+                setOpacity(0);
+                return;
+            }
+
+            setOpacity(1);
+
         }
     }
+
+    private enum FieldColor{
+        B(Color.BLACK),
+        W(Color.WHITE),
+        E(Color.TRANSPARENT);
+
+        private Paint color;
+
+        FieldColor(Color color){
+            this.color = color;
+        }
+
+        public Paint getColor() {
+            return color;
+        }
+    } 
 }

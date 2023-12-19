@@ -71,7 +71,7 @@ public class Board {
             for(int j = 0; j < size; j++){
                 Stone stone = board[j][i];
 
-                if(stone == null){ simplifiedBoard[j][i] = ' '; }
+                if(stone == null){ simplifiedBoard[j][i] = 'E'; }
                 else if(StoneColor.BLACK.equals(stone.getColor())){ simplifiedBoard[j][i] = 'B'; }
                 else{ simplifiedBoard[j][i] = 'W'; }
             }
