@@ -56,7 +56,8 @@ public class TwoPlayerSession implements Session {
                 char[][] board = GameManager.getInstance().getSimplifiedBoard();
                 for (int i = 0; i < size; i++) {
                     for (int j = 0; j < size; j++) {
-                        playerStream[player].writeChar(board[i][j]);
+                        playerStream[0].writeChar(board[i][j]);
+                        playerStream[1].writeChar(board[i][j]);
                         System.out.println("Send to player state of " + i + " " + j + " field");
                     }
                 }

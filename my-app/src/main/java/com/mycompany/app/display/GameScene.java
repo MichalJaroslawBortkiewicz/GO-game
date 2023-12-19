@@ -1,5 +1,7 @@
 package com.mycompany.app.display;
 
+import com.mycompany.app.board.StoneColor;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -10,7 +12,9 @@ public class GameScene extends Group {
     final Field[][] board;
     final int size;
 
-    private void rearrange(char[][] boardState) {
+    final StoneColor color;
+
+    public void rearrange(char[][] boardState) {
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
                 switch (boardState[i][j]) {
@@ -49,6 +53,14 @@ public class GameScene extends Group {
         }
 
         getChildren().addAll(rectangle, lines, stones);
+
+        if(AppManager.getInstance().isMyTurn()) {
+            color = StoneColor.BLACK;
+            System.out.println("I'm black player");
+        } else {
+            color = StoneColor.WHITE;
+            System.out.println("I'm white player");
+        }
     }
 
     final class Field extends Circle {
@@ -56,9 +68,10 @@ public class GameScene extends Group {
         int j;
 
         private void sendMove() {
-            char[][] boardState = App.getApp().sendMove(i, j);
+            char[][] boardState = AppManager.getInstance().sendMove(i, j);
             if (boardState != null) {
                 rearrange(boardState);
+                AppManager.getInstance().waitForOpponentsMove();
             }
         }
 
