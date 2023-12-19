@@ -56,7 +56,7 @@ public class MenuScene extends Group {
         @Override
         public void handle(ActionEvent event) {
             try {
-                App.setClient(new Client(boardSize, withBot));
+                App.getApp().setClient(new Client(boardSize, withBot));
                 App.getApp().startGame(boardSize);
             } catch (IOException ex) {
                 System.err.println("Connection with server failed: " + ex.getMessage());

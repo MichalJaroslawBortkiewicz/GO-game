@@ -22,5 +22,6 @@ public class TwoPlayerSession implements Session {
     {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
+        startGame(size);
     }
 }

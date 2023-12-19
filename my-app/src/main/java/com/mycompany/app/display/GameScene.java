@@ -1,14 +1,10 @@
 package com.mycompany.app.display;
 
-import java.io.IOException;
-
-import com.mycompany.app.client.Client;
-import com.mycompany.app.client.exceptions.FromServerException;
-
 import javafx.scene.Group;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 
 public class GameScene extends Group {
     final Field[][] board;
@@ -35,41 +31,45 @@ public class GameScene extends Group {
     public GameScene(int size) {
         this.size = size;
         this.board = new Field[size][size];
-        final GridPane pane = new GridPane();
+
+        Group lines = new Group();
+        Group stones = new Group();
+
+        Rectangle rectangle = new Rectangle(655 + size * 5, 655 + size * 5);
+        rectangle.setFill(Color.gray(0.7));
 
         for(int i = 0; i < size; i++) {
+            lines.getChildren().add(new Line(15, 30 + 300f/size + (600f/size + 5) * i, 640 + size * 5, 30 + 300f/size + (600f/size + 5) * i));
+            lines.getChildren().add(new Line(30 +300/size + (600f/size + 5) * i, 15, 30 + 300f/size + (600f/size + 5) * i, 640 + size * 5));
             for(int j = 0; j < size; j++) {
                 Field field = new Field(i, j, 300f/size);
-                pane.add(field, i, j);
+                stones.getChildren().add(field);
                 board[i][j] = field;
             }
         }
 
-        getChildren().add(pane);
+        getChildren().addAll(rectangle, lines, stones);
     }
 
     final class Field extends Circle {
         int i;
         int j;
-        Client client;
 
         private void sendMove() {
-            setFill(Color.BLACK);
-            /*try {
-                rearrange(client.sendMove(i, j));
-            } catch (IOException ex) {
-                System.err.println("Connection with server failed: " + ex.getMessage());
-            } catch (FromServerException ex) {
-                System.err.println("Server send exception: " + ex.getMessage());
-            }*/
+            char[][] boardState = App.getApp().sendMove(i, j);
+            if (boardState != null) {
+                rearrange(boardState);
+            }
         }
 
         public Field(int i, int j, float r) {
             this.i = i;
             this.j = j;
-            client = App.getClient();
+            float gap = 2 * r + 5;
             setRadius(r);
-            setFill(Color.GRAY);
+            setCenterX(30 + r + i * gap);
+            setCenterY(30 + r + j * gap);
+            setFill(Color.TRANSPARENT);
             setOnMouseClicked(event -> sendMove());
         }
     }
