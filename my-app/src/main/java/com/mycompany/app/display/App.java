@@ -47,9 +47,8 @@ public class App extends Application {
     @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
     public char[][] sendMove(int i, int j)
     {
-        if (!myTurn) {
-            return null;
-        }
+        if (!myTurn) { return null; }
+        
         char[][] boardState = null;
         try {
             boardState = client.sendMove(i, j);
