@@ -1,6 +1,5 @@
 package com.mycompany.app.display;
 
-import com.mycompany.app.board.StoneColor;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -13,7 +12,7 @@ public class GameScene extends Group {
     private final Field[][] boardData;
     private final int size;
 
-    private StoneColor stoneColor = StoneColor.WHITE;
+    private PlayerColor playerColor = PlayerColor.WHITE;
 
     private int borderWidth = 20;
     private int gridWidth = 40;
@@ -91,7 +90,7 @@ public class GameScene extends Group {
             setOnMouseEntered(event -> {
                 if(!FieldColor.E.equals(fieldColor)){ return; }
                 setOpacity(0.5);
-                setFill(stoneColor.getColor());
+                setFill(playerColor.getColor());
             });
 
             setOnMouseExited(event -> {

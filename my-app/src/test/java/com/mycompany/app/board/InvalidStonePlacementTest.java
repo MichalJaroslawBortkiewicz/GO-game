@@ -129,4 +129,22 @@ public class InvalidStonePlacementTest extends StoneTestHelper{
 
         }
     }
+
+    @Test
+    public void invalidStonePlacementTest5(){
+        Board board = new Board(3);
+
+        try {
+            board.addStone(0, 0, black);
+            board.addStone(0, 0, white);    
+            assertTrue(false);
+        }
+        catch (IncorrectStonePlacementException ex){
+            Stone stone = getStonesFromBoard(board).get(0);
+            assertEquals(2, stone.getBreaths());
+            assertEquals(2, stone.getStoneGroup().getBreaths());
+            assertEquals(1, stone.getStoneGroup().getStones().size());
+            assertEquals(StoneColor.BLACK, stone.getColor());
+        }
+    }
 }
