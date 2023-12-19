@@ -1,23 +1,20 @@
-package com.mycompany.app.client;
+package com.mycompany.app.display;
 
-import javafx.application.Application;
+import java.io.IOException;
+
+import com.mycompany.app.client.Client;
+import com.mycompany.app.client.exceptions.FromServerException;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 
-public class App extends Application {
-    Client client;
+public class MenuScene extends Group {
 
-
-    @Override
-    public void start(Stage stage) {
-        stage.setTitle("GO");
-
+    public MenuScene()
+    {
         final Button gameButton9noBot = new Button("Play 9x9 against Player");
         final Button gameButton13noBot = new Button("Play 13x13 against Player");
         final Button gameButton19noBot = new Button("Play 19x19 against Player");
@@ -33,38 +30,18 @@ public class App extends Application {
         gameButton19withBot.setOnAction(new GameButtonHandler(19, true));
 
         final GridPane inputGridPane = new GridPane();
-
-        GridPane.setConstraints(gameButton9noBot, 0, 0);
-        GridPane.setConstraints(gameButton13noBot, 1, 0);
-        GridPane.setConstraints(gameButton19noBot, 2, 0);
-        GridPane.setConstraints(gameButton9withBot, 0, 1);
-        GridPane.setConstraints(gameButton13withBot, 1, 1);
-        GridPane.setConstraints(gameButton19withBot, 2, 1);
         
         inputGridPane.setHgap(6);
         inputGridPane.setVgap(6);
-        inputGridPane.getChildren().addAll(
-            gameButton9noBot,
-            gameButton13noBot,
-            gameButton19noBot,
-            gameButton9withBot,
-            gameButton13withBot,
-            gameButton19withBot
-        );
 
-        final Group rootGroup = new Group();
+        inputGridPane.add(gameButton9noBot, 0, 0);
+        inputGridPane.add(gameButton13noBot, 1, 0);
+        inputGridPane.add(gameButton19noBot, 2, 0);
+        inputGridPane.add(gameButton9withBot, 0, 1);
+        inputGridPane.add(gameButton13withBot, 1, 1);
+        inputGridPane.add(gameButton19withBot, 2, 1);
 
-        rootGroup.getChildren().add(inputGridPane);
-
-        Scene menu = new Scene(rootGroup);
-
-        stage.setScene(menu);
-        stage.setX(0);
-        stage.setY(5);
-        stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-        stage.setHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
-        stage.setMaximized(true);
-        stage.show();
+        getChildren().add(inputGridPane);
     }
 
     final class GameButtonHandler implements EventHandler<ActionEvent> {
@@ -78,11 +55,14 @@ public class App extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            //client = new Client(boardSize, withBot);
+            try {
+                App.setClient(new Client(boardSize, withBot));
+                App.getApp().startGame(boardSize);
+            } catch (IOException ex) {
+                System.err.println("Connection with server failed: " + ex.getMessage());
+            } catch (FromServerException ex) {
+                System.err.println("Server send exception: " + ex.getMessage());
+            }
         }
-    }
-
-    public static void main( String[] args ) {
-        launch(args);
     }
 }
