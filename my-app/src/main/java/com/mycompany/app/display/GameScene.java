@@ -12,7 +12,7 @@ public class GameScene extends Group {
     private final Field[][] boardData;
     private final int size;
 
-    private PlayerColor playerColor = PlayerColor.WHITE;
+    private PlayerColor playerColor;
 
     private int borderWidth = 20;
     private int gridWidth = 40;
@@ -57,9 +57,16 @@ public class GameScene extends Group {
         }
 
         getChildren().addAll(board, lines, stones);
+
+        if(AppManager.getInstance().isMyTurn()){
+            playerColor = PlayerColor.BLACK;
+        }
+        else {
+            playerColor = PlayerColor.WHITE;
+        }
     }
 
-    private void rearrange(char[][] boardDataState) {
+    public void rearrange(char[][] boardDataState) {
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
                 String colorName = String.valueOf(boardDataState[i][j]);
@@ -103,9 +110,10 @@ public class GameScene extends Group {
         }
 
         private void sendMove() {
-            char[][] boardDataState = App.getApp().sendMove(x, y);
+            char[][] boardDataState = AppManager.getInstance().sendMove(x, y);
             if (boardDataState != null) {
                 rearrange(boardDataState);
+                AppManager.getInstance().waitForOpponentsMove();
             }
         }
 
