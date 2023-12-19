@@ -56,8 +56,6 @@ public class MenuScene extends Group {
         @Override
         public void handle(ActionEvent event) {
             App.getApp().startGame(boardSize);
-
-            /*
             try {
                 App.getApp().setClient(new Client(boardSize, withBot));
                 App.getApp().startGame(boardSize);
@@ -66,7 +64,6 @@ public class MenuScene extends Group {
             } catch (FromServerException ex) {
                 System.err.println("Server send exception: " + ex.getMessage());
             }
-            */
         }
     }
 }

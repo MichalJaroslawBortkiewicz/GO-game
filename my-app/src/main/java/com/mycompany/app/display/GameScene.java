@@ -3,7 +3,6 @@ package com.mycompany.app.display;
 import com.mycompany.app.board.StoneColor;
 
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -29,8 +28,6 @@ public class GameScene extends Group {
         Group lines = new Group();
         Group stones = new Group();
 
-        //Scene scene = get();
-        //(scene.getWidth() - boardLength) / 2, (scene.getHeight() - boardLength) / 2
         
         Rectangle board = new Rectangle(boardLength, boardLength);
         board.setFill(Color.KHAKI);
@@ -90,29 +87,20 @@ public class GameScene extends Group {
             setOpacity(0);
             setStrokeWidth(2);
             setStroke(Color.gray(0.2));
-
             
-            Boolean isBlack = false;
-            
-
             setOnMouseEntered(event -> {
                 if(!FieldColor.E.equals(fieldColor)){ return; }
                 setOpacity(0.5);
                 setFill(stoneColor.getColor());
             });
+
             setOnMouseExited(event -> {
                 if(!FieldColor.E.equals(fieldColor)){ return; }
                 setFill(fieldColor.getColor());
                 setOpacity(0);
             });
 
-            setOnMouseClicked(event -> {
-                changeColor(isBlack ? "B" : "W");
-            });
-
-
-
-            //setOnMouseClicked(event -> sendMove());
+            setOnMouseClicked(event -> sendMove());
         }
 
         private void sendMove() {
