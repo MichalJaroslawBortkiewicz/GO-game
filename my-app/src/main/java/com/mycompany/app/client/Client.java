@@ -21,7 +21,9 @@ public class Client {
         System.out.println("Client send move");
 
         if (fromServer.readBoolean()) {
-            throw new FromServerException(fromServer.readAllBytes());
+            System.out.println("Exception from server");
+            int length = fromServer.readInt();
+            throw new FromServerException(fromServer.readNBytes(length));
         }
 
         System.out.println("No exception from server");
@@ -31,14 +33,13 @@ public class Client {
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
                 board[i][j] = fromServer.readChar();
-                System.out.println("Read " + i + " " + j + " board field");
             }
         }
 
         return board;
     }
 
-    public void waitForOpponentsMove() throws IOException {
+    public void waitForOpponentsMove() {
         OpponentsMoveReceiver receiver = new OpponentsMoveReceiver(fromServer, size);
         Thread thread = new Thread(receiver);
         thread.start();

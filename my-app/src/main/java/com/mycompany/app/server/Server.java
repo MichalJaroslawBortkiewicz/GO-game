@@ -44,6 +44,7 @@ public final class Server {
                 }
                 if (index == -1) {
                     outputStream.writeBoolean(true);
+                    outputStream.writeInt("Invalid board size!".getBytes().length);
                     outputStream.writeBytes("Invalid board size!");
                     continue;
                 }

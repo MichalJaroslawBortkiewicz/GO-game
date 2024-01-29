@@ -58,12 +58,12 @@ public class TwoPlayerSession implements Session {
                     for (int j = 0; j < size; j++) {
                         playerStream[0].writeChar(board[i][j]);
                         playerStream[1].writeChar(board[i][j]);
-                        System.out.println("Send to player state of " + i + " " + j + " field");
                     }
                 }
             } catch (IncorrectStonePlacementException | NotYourTurnException ex) {
                 try {
                     playerStream[player].writeBoolean(true);
+                    playerStream[player].writeInt(ex.getMessage().getBytes().length);
                     playerStream[player].writeBytes(ex.getMessage());
                 } catch (IOException ioex) {
                     System.err.println(ioex.getMessage());

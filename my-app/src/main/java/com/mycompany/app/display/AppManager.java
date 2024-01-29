@@ -45,13 +45,8 @@ public class AppManager {
         return boardState;
     }
 
-    public void waitForOpponentsMove()
-    {
-        try {
-            client.waitForOpponentsMove();
-        } catch (IOException ex) {
-            System.err.println("Connection with server failed: " + ex.getMessage());
-        }
+    public void waitForOpponentsMove() {
+        client.waitForOpponentsMove();
     }
 
     public void setApp(App app) {

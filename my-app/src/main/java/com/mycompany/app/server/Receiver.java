@@ -26,6 +26,8 @@ public class Receiver implements Runnable {
             }
             catch (IOException ex) {
                 System.err.println(ex.getMessage());
+                //TODO : surrender
+                break;
             }
         }
     }
