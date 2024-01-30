@@ -13,8 +13,6 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class MenuScene extends Group {
     Dialog<ButtonType> dialog = new Dialog<ButtonType>();

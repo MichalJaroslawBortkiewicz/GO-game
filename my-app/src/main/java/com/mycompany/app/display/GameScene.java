@@ -7,6 +7,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 
 public class GameScene extends Group {
     private final Field[][] boardData;
@@ -27,7 +28,12 @@ public class GameScene extends Group {
         Group lines = new Group();
         Group stones = new Group();
 
+        Rectangle background = new Rectangle(Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
+        background.setFill(Color.DARKKHAKI);
+
         
+
+
         Rectangle board = new Rectangle(boardLength, boardLength);
         board.setFill(Color.KHAKI);
         board.setStroke(Color.BROWN);
@@ -56,7 +62,7 @@ public class GameScene extends Group {
             }
         }
 
-        getChildren().addAll(board, lines, stones);
+        getChildren().addAll(background, board, lines, stones);
 
         if(AppManager.getInstance().isMyTurn()){
             playerColor = PlayerColor.BLACK;
@@ -80,7 +86,7 @@ public class GameScene extends Group {
         int x;
         int y;
 
-       FieldColor fieldColor = FieldColor.E;
+        FieldColor fieldColor = FieldColor.E;
         
         public Field(int x, int y, double r) {
             this.x = x;
