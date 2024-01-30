@@ -28,7 +28,7 @@ public class DataBaseManager implements IDataBaseManager{
     protected int moveNr = 1;
 
 
-    DataBaseManager(String dbURL, String login, String password, int gameNr){
+    public DataBaseManager(String dbURL, String login, String password, int gameNr){
         this.dbURL = dbURL;
         this.login = login;
         this.password = password;
@@ -38,7 +38,7 @@ public class DataBaseManager implements IDataBaseManager{
         this.gameNr = gameNr;
     }
 
-    DataBaseManager(String dbURL, String login, String password){
+    public DataBaseManager(String dbURL, String login, String password){
         this.dbURL = dbURL;
         this.login = login;
         this.password = password;

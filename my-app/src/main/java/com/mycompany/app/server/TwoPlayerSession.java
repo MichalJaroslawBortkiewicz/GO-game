@@ -8,12 +8,14 @@ import java.net.Socket;
 import com.mycompany.app.board.GameManager;
 import com.mycompany.app.board.exceptions.IncorrectStonePlacementException;
 import com.mycompany.app.board.exceptions.NotYourTurnException;
+import com.mycompany.app.database.IDataBaseManager;
 
 public class TwoPlayerSession implements Session {
     private Socket firstPlayer;
     private Socket secondPlayer;
     private DataOutputStream[] playerStream;
     private DataInputStream[] playerIn;
+    private IDataBaseManager dataBaseManager;
     private int size;
 
     private boolean gamesON;
@@ -66,12 +68,17 @@ public class TwoPlayerSession implements Session {
                             }
                         }
                     } else {
+                        dataBaseManager.saveMove("NULL");
                         playerStream[currentPlayer].writeBoolean(true);
                     }
+
+                    dataBaseManager.saveMove("FF");
+
                     break;
                 }
                 GameManager.getInstance().addStone(x, y, player);
                 if (x == -1 && passed) {
+                    dataBaseManager.saveMove("PASS");
                     playerStream[player].writeBoolean(false);
                     playerStream[player].writeBoolean(false);
                     for (int i = 0; i < size; i++) {
@@ -113,6 +120,7 @@ public class TwoPlayerSession implements Session {
                     continue;
                 }
                 if (x == -1 && !passed) {
+                    dataBaseManager.saveMove("PASS");
                     passed = true;
                     playerStream[player].writeBoolean(false);
                     playerStream[player].writeBoolean(false);
@@ -126,6 +134,7 @@ public class TwoPlayerSession implements Session {
                 }
                 passed = false;
                 System.out.println("Stone added");
+                dataBaseManager.saveMove(x + ":" + y);
                 playerStream[player].writeBoolean(false);
                 playerStream[player].writeBoolean(false);
                 char[][] board = GameManager.getInstance().getSimplifiedBoard();
@@ -180,7 +189,7 @@ public class TwoPlayerSession implements Session {
         } catch (IOException ex) {}
     }
     
-    public TwoPlayerSession(Socket firstPlayer, Socket secondPlayer, int size)
+    public TwoPlayerSession(Socket firstPlayer, Socket secondPlayer, int size, IDataBaseManager dataBaseManager)
     {
         if (Math.random() < 0.5) {
             this.firstPlayer = firstPlayer;
@@ -189,6 +198,7 @@ public class TwoPlayerSession implements Session {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
+        this.dataBaseManager = dataBaseManager;
         playerStream = new DataOutputStream[2];
         playerIn = new DataInputStream[2];
         this.size = size;

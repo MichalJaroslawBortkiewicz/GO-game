@@ -7,8 +7,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
+import com.mycompany.app.database.IDataBaseManager;
+import com.mycompany.app.database.DataBaseManager;
+
+
 public final class Server {
     private int sessions[] = {0, 0, 0};
+
+    private String dbURL = "jdbc:mysql://localhost:3306/go_games";
+    private String login = "root";
+    private String password = "password";
 
     public void cancelSession(int index) {
         sessions[index] = 0;
@@ -80,7 +88,8 @@ public final class Server {
                     outputStream.writeBoolean(false);
                 }
                 else {
-                    Session task = new TwoPlayerSession(players[index], player, size);
+                    IDataBaseManager dataBaseManager = new DataBaseManager(dbURL, login, password);
+                    Session task = new TwoPlayerSession(players[index], player, size, dataBaseManager);
                     System.out.println(new Date() + ":     Starting a thread for session " + sessions[index] + "...");
                     Thread thread = new Thread(task);
                     thread.start();
