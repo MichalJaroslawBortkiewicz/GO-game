@@ -47,7 +47,10 @@ public class GameManager {
         if ((player == 1) != whitePlays) {
             throw new NotYourTurnException();
         }
-        board.addStone(x, y, player == 1 ? StoneColor.WHITE : StoneColor.BLACK);
+        if (x != -1) {
+            board.addStone(x, y, player == 1 ? StoneColor.WHITE : StoneColor.BLACK);
+            System.out.println("board.addStone");
+        }
         nextPlayer();
     }
 

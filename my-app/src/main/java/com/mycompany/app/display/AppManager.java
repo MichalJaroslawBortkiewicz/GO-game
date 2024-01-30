@@ -21,7 +21,10 @@ public class AppManager {
         System.out.println("Waiting for player to join...");
         client.confirmGame();
         gameScene = app.startGame(size);
-        if(!myTurn) {
+        if (myTurn) {
+            waitForOpponentsSurrender();
+        }
+        else {
             waitForOpponentsMove();
         }
     }
@@ -40,7 +43,7 @@ public class AppManager {
             {
                 for (int j1 = 0; j1 < 9; j1++)
                 {
-                    System.out.print(boardState[i][j]);
+                    System.out.print(boardState[i1][j1]);
                 }
             }
             System.out.println();
@@ -50,6 +53,7 @@ public class AppManager {
             System.err.println("Connection with server failed: " + ex.getMessage());
         } catch (FromServerException ex) {
             System.err.println("Server returned exception: " + ex.getMessage());
+            waitForOpponentsSurrender();
         }
         return boardState;
     }
@@ -60,6 +64,10 @@ public class AppManager {
 
     public void waitForGameStart(Dialog<ButtonType> dialog) {
         client.waitForGameStart(dialog);
+    }
+
+    public void waitForOpponentsSurrender() {
+        client.waitForOpponentsSurrender();
     }
 
     public void cancelGame() {

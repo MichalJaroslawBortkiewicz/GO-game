@@ -24,6 +24,7 @@ public class Board {
         }
 
         Stone stone = new Stone(x, y, color, this);
+        System.out.println("new Stone");
         board[x][y] = stone;
     }
 

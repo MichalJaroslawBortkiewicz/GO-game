@@ -56,6 +56,12 @@ public class Client {
         thread.start();
     }
 
+    public void waitForOpponentsSurrender() {
+        SurrenderReceiver receiver = new SurrenderReceiver(fromServer);
+        Thread thread = new Thread(receiver);
+        thread.start();
+    }
+
     public void cancelGame() {
         gameStartReceiver.kill();
 

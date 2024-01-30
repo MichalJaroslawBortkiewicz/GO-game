@@ -112,6 +112,12 @@ public class GameScene extends Group {
         private void sendMove() {
             char[][] boardDataState = AppManager.getInstance().sendMove(x, y);
             if (boardDataState != null) {
+                if (boardDataState[0][0] == '\n') {
+                    //TODO spasowałem
+                }
+                if (boardDataState[0][0] == '\0') {
+                    //TODO poddałem się
+                }
                 rearrange(boardDataState);
                 AppManager.getInstance().waitForOpponentsMove();
             }

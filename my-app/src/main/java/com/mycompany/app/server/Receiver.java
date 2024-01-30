@@ -26,7 +26,12 @@ public class Receiver implements Runnable {
             }
             catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                //TODO : surrender
+                if (!gamesON) {
+                    synchronized (session) {
+                        session.addStone(-2, 0, player);
+                        session.notifyAll();
+                    }
+                }
                 break;
             }
         }

@@ -50,8 +50,35 @@ public class TwoPlayerSession implements Session {
             } catch (InterruptedException ex) {}
             System.out.println("Session notified");
             try {
+                if (x == -2) {
+                    playerStream[player].writeBoolean(true);
+                    playerStream[player].writeBoolean(false);
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            playerStream[1-player].writeChar('\0');
+                        }
+                    }
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            playerStream[player].writeChar('\0');
+                        }
+                    }
+                    break;
+                }
                 GameManager.getInstance().addStone(x, y, player);
+                if (x == -1) {
+                    playerStream[player].writeBoolean(false);
+                    playerStream[player].writeBoolean(false);
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            playerStream[0].writeChar('\n');
+                            playerStream[1].writeChar('\n');
+                        }
+                    }
+                    continue;
+                }
                 System.out.println("Stone added");
+                playerStream[player].writeBoolean(false);
                 playerStream[player].writeBoolean(false);
                 char[][] board = GameManager.getInstance().getSimplifiedBoard();
                 for (int i = 0; i < size; i++) {
@@ -62,6 +89,7 @@ public class TwoPlayerSession implements Session {
                 }
             } catch (IncorrectStonePlacementException | NotYourTurnException ex) {
                 try {
+                    playerStream[player].writeBoolean(true);
                     playerStream[player].writeBoolean(true);
                     playerStream[player].writeInt(ex.getMessage().getBytes().length);
                     playerStream[player].writeBytes(ex.getMessage());
@@ -87,10 +115,16 @@ public class TwoPlayerSession implements Session {
         this.player = player;
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     @Override
     public void endGame() {
         r1.gamesOFF();
         r2.gamesOFF();
+        gamesON = false;
+        try {
+            firstPlayer.close();
+            secondPlayer.close(); 
+        } catch (IOException ex) {}
     }
     
     public TwoPlayerSession(Socket firstPlayer, Socket secondPlayer, int size)

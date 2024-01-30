@@ -23,8 +23,16 @@ public class OpponentsMoveReceiver implements Runnable {
             System.err.println(ex.getMessage());
         }
 
+        if (board[0][0] == '\n') {
+            //TODO przeciwnik spasował
+        }
+        if (board[0][0] == '\0') {
+            //TODO przeciwnik sie poddał
+        }
+
         AppManager.getInstance().getGameScene().rearrange(board);
         AppManager.getInstance().setMyTurn(true);
+        AppManager.getInstance().waitForOpponentsSurrender();
     }
     
     public OpponentsMoveReceiver(DataInputStream input, int size) {
