@@ -94,7 +94,7 @@ public class Stone {
             else{ enemyDie = true; }
         }
 
-        if(allyDie || !hasAllies && !enemyDie ){
+        if((allyDie || !hasAllies) && !enemyDie ){
             for(Stone stone : neighbors){
                 if(stone == null){ continue; }
                 stone.getStoneGroup().addBreath();
