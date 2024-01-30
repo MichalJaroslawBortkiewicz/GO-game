@@ -32,6 +32,7 @@ public final class Server {
                 DataInputStream inputStream = new DataInputStream(player.getInputStream());
                 DataOutputStream outputStream = new DataOutputStream(player.getOutputStream());
                 int size = inputStream.readInt();
+                int type = inputStream.readInt();
                 int index;
                 switch (size) {
                 case 9:
@@ -53,9 +54,17 @@ public final class Server {
                     outputStream.writeBytes("Invalid board size!");
                     continue;
                 }
-                if (inputStream.readBoolean()) {
+                if (type == 1) {
                     System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're playing with bot. Their IP address is " + player.getLocalAddress().getHostAddress());
                     Session task = new SessionWithBot(player, size);
+                    System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...");
+                    Thread thread = new Thread(task);
+                    thread.start();
+                    outputStream.writeBoolean(false);
+                } else if (type == 2) {
+                    //TODO : game from database
+                    System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're replaying game from database. Their IP address is " + player.getLocalAddress().getHostAddress());
+                    Session task = new SessionFromDatabase(player, size);
                     System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...");
                     Thread thread = new Thread(task);
                     thread.start();

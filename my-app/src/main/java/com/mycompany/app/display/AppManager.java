@@ -59,10 +59,24 @@ public class AppManager {
         return boardState;
     }
 
+    public void enterProposingMode() {
+        gameScene.enterProposingMode();
+    }
+
+    public void sendProposition(char[][] proposition) {
+        client.sendProposition(proposition);
+    }
+
+    public void enterJudgeMode() {
+
+    }
+
     public void surrender() {
         try {
             surrender = true;
-            client.surrender();
+            if (client != null) {
+                client.surrender();
+            }
         } catch (IOException ex) {
             System.err.println("Connection with server failed: " + ex.getMessage());
         }

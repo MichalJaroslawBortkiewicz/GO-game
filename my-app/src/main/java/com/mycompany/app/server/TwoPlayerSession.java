@@ -15,6 +15,7 @@ public class TwoPlayerSession implements Session {
     private int size;
 
     private boolean gamesON;
+    private boolean passed = false;
     private Receiver r1;
     private Receiver r2;
 
@@ -64,7 +65,19 @@ public class TwoPlayerSession implements Session {
                     break;
                 }
                 GameManager.getInstance().addStone(x, y, player);
-                if (x == -1) {
+                if (x == -1 && passed) {
+                    playerStream[player].writeBoolean(false);
+                    playerStream[player].writeBoolean(false);
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            playerStream[1-player].writeChar('\1');
+                            playerStream[player].writeChar('\1');
+                        }
+                    }
+                    continue;
+                }
+                if (x == -1 && !passed) {
+                    passed = true;
                     playerStream[player].writeBoolean(false);
                     playerStream[player].writeBoolean(false);
                     for (int i = 0; i < size; i++) {
@@ -75,6 +88,7 @@ public class TwoPlayerSession implements Session {
                     }
                     continue;
                 }
+                passed = false;
                 System.out.println("Stone added");
                 playerStream[player].writeBoolean(false);
                 playerStream[player].writeBoolean(false);

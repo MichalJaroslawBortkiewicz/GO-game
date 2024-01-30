@@ -1,7 +1,9 @@
 package com.mycompany.app.display;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -30,6 +32,12 @@ public class App extends Application {
 
     public GameScene startGame(int size) {
         GameScene gameScene = new GameScene(size);
+        gameScene.addEventFilter(MouseEvent.DRAG_DETECTED , new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                gameScene.startFullDrag();
+            }
+        });
         stage.setScene(new Scene(gameScene));
         return gameScene;
     }

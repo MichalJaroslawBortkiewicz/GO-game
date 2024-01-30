@@ -49,6 +49,18 @@ public class Client {
         toServer.writeInt(-2);
     }
 
+    public void sendProposition(char[][] proposition) {
+        try {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    toServer.writeChar(proposition[i][j]);
+                }
+            }
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
     public void waitForOpponentsMove() {
         OpponentsMoveReceiver receiver = new OpponentsMoveReceiver(fromServer, size);
         Thread thread = new Thread(receiver);
@@ -94,7 +106,7 @@ public class Client {
         }
     }
 
-    public Client(int size, boolean withBot) throws IOException, FromServerException {
+    public Client(int size, int type) throws IOException, FromServerException {
         this.size = size;
 
         socket = new Socket("localhost", 8000);
@@ -102,7 +114,7 @@ public class Client {
         toServer = new DataOutputStream(socket.getOutputStream());
 
         toServer.writeInt(size);
-        toServer.writeBoolean(withBot);
+        toServer.writeInt(type);
 
         if (fromServer.readBoolean()) {
             int length = fromServer.readInt();

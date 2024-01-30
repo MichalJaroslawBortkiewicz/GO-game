@@ -38,6 +38,11 @@ public class OpponentsMoveReceiver implements Runnable {
             Platform.runLater( () -> AppManager.getInstance().endGame());
             return;
         }
+        if (board[0][0] == '\1') {
+            Platform.runLater( () -> AppManager.getInstance().enterProposingMode());
+            return;
+            // TODO double pass
+        }
 
         AppManager.getInstance().getGameScene().rearrange(board);
         AppManager.getInstance().setMyTurn(true);

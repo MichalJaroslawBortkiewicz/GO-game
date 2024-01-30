@@ -3,6 +3,7 @@ package com.mycompany.app.display;
 
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -18,6 +19,16 @@ public class GameScene extends Group {
     private int borderWidth = 20;
     private int gridWidth = 40;
 
+    private Button passButton;
+    private Button resignButton;
+
+    private Button sendButton;
+    private Button whiteButton;
+    private Button blackButton;
+    private Button eraserButton;
+    private FieldColor currentColor = FieldColor.E;
+    private char [][] proposition;
+    Group propositionGroup = new Group();
     
     public GameScene(int size) {
         this.size = size;
@@ -34,18 +45,45 @@ public class GameScene extends Group {
         board.setStroke(Color.BROWN);
         board.setStrokeWidth(3);
 
-        Button passButton = new Button("Pass");
+        passButton = new Button("Pass");
         passButton.setLayoutX(400);
         passButton.setLayoutY(30);
         passButton.setOnAction(event -> {
-            if (AppManager.getInstance().sendMove(-1, -1) != null) {
+            char[][] boardDataState = AppManager.getInstance().sendMove(-1, -1);
+            if (boardDataState != null) {
+                if (boardDataState[0][0] == '\1') {
+                    AppManager.getInstance().enterJudgeMode();
+                    // TODO double pass
+                }
                 AppManager.getInstance().waitForOpponentsMove();
             }
         });
-        Button resignButton = new Button("Resign");
+        resignButton = new Button("Resign");
         resignButton.setLayoutX(400);
         resignButton.setLayoutY(80);
         resignButton.setOnAction(event -> AppManager.getInstance().surrender());
+
+        sendButton = new Button("Send");
+        sendButton.setLayoutX(400);
+        sendButton.setLayoutY(30);
+        sendButton.setOnAction(event -> AppManager.getInstance().sendProposition(proposition));
+        Rectangle rect = new Rectangle(10, 10);
+        rect.setFill(Color.WHITE);
+        whiteButton = new Button("", rect);
+        whiteButton.setLayoutX(400);
+        whiteButton.setLayoutY(80);
+        whiteButton.setOnAction(event -> currentColor = FieldColor.W);
+        rect = new Rectangle(10, 10);
+        rect.setFill(Color.BLACK);
+        blackButton = new Button("", rect);
+        blackButton.setLayoutX(440);
+        blackButton.setLayoutY(80);
+        blackButton.setOnAction(event -> currentColor = FieldColor.B);
+        eraserButton = new Button(" ");
+        eraserButton.setLayoutX(480);
+        eraserButton.setLayoutY(80);
+        eraserButton.setOnAction(event -> currentColor = FieldColor.E);
+        proposition = new char[size][size];
 
         for(int i = 0; i < size; i++) {
             double start = borderWidth;
@@ -67,6 +105,10 @@ public class GameScene extends Group {
                 Field field = new Field(i, j, 0.4 * gridWidth);
                 stones.getChildren().add(field);
                 boardData[i][j] = field;
+                
+                PropositionField proField = new PropositionField(i, j, 0.4 * gridWidth);
+                propositionGroup.getChildren().add(proField);
+                proposition[i][j] = 'E';
             }
         }
 
@@ -89,6 +131,39 @@ public class GameScene extends Group {
         }
     }
 
+    public void enterProposingMode() {
+        getChildren().removeAll(passButton, resignButton);
+        getChildren().addAll(sendButton, whiteButton, blackButton, eraserButton, propositionGroup);
+    }
+
+    private final class PropositionField extends Rectangle {
+        int x;
+        int y;
+
+        FieldColor fieldColor = FieldColor.E;
+
+        public PropositionField(int x, int y, double r) {
+            this.x = x;
+            this.y = y;
+
+            setHeight(2.4*r);
+            setWidth(2.4*r);
+            setLayoutX(borderWidth + x * gridWidth - 1.2*r);
+            setLayoutY(borderWidth + y * gridWidth - 1.2*r);
+            setFill(Color.TRANSPARENT);
+            setOpacity(0.5);
+            setOnMouseDragEntered(event -> {
+                fieldColor = currentColor;
+                setFill(fieldColor.getColor());
+                proposition[x][y] = fieldColor.toChar();
+            });
+            setOnMouseClicked(event -> {
+                fieldColor = currentColor;
+                setFill(fieldColor.getColor());
+                proposition[x][y] = fieldColor.toChar();
+            });
+        }
+    }
 
     private final class Field extends Circle {
         int x;
@@ -157,6 +232,19 @@ public class GameScene extends Group {
 
         public Paint getColor() {
             return color;
+        }
+
+        public char toChar() {
+            if (FieldColor.B.equals(this)){
+                return 'B';
+            }
+            if (FieldColor.W.equals(this)){
+                return 'W';
+            }
+            if (FieldColor.E.equals(this)){
+                return 'E';
+            }
+            return '\0';
         }
     } 
 }

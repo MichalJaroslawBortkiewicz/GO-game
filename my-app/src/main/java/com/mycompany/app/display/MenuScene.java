@@ -31,12 +31,12 @@ public class MenuScene extends Group {
         final Button gameButton13withBot = new Button("Bot 13x13");
         final Button gameButton19withBot = new Button("Bot 19x19");
 
-        gameButton9noBot.setOnAction(new GameButtonHandler(9, false));
-        gameButton13noBot.setOnAction(new GameButtonHandler(13, false));
-        gameButton19noBot.setOnAction(new GameButtonHandler(19, false));
-        gameButton9withBot.setOnAction(new GameButtonHandler(9, true));
-        gameButton13withBot.setOnAction(new GameButtonHandler(13, true));
-        gameButton19withBot.setOnAction(new GameButtonHandler(19, true));
+        gameButton9noBot.setOnAction(new GameButtonHandler(9, 0));
+        gameButton13noBot.setOnAction(new GameButtonHandler(13, 0));
+        gameButton19noBot.setOnAction(new GameButtonHandler(19, 0));
+        gameButton9withBot.setOnAction(new GameButtonHandler(9, 1));
+        gameButton13withBot.setOnAction(new GameButtonHandler(13, 1));
+        gameButton19withBot.setOnAction(new GameButtonHandler(19, 1));
 
         final GridPane inputGridPane = new GridPane();
         
@@ -55,18 +55,18 @@ public class MenuScene extends Group {
 
     final class GameButtonHandler implements EventHandler<ActionEvent> {
         private final int boardSize;
-        private final boolean withBot;
+        private final int type;
 
-        public GameButtonHandler(int boardSize, boolean withBot) {
+        public GameButtonHandler(int boardSize, int type) {
             this.boardSize = boardSize;
-            this.withBot = withBot;
+            this.type = type;
         }
 
         @Override
         public void handle(ActionEvent event) {
 
             try {
-                AppManager.getInstance().setClient(new Client(boardSize, withBot));
+                AppManager.getInstance().setClient(new Client(boardSize, type));
                 AppManager.getInstance().setGameCanceled(true);
                 AppManager.getInstance().waitForGameStart(dialog);
                 System.out.println(dialog.showAndWait());
