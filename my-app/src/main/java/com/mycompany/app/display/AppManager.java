@@ -5,6 +5,9 @@ import java.io.IOException;
 import com.mycompany.app.client.Client;
 import com.mycompany.app.client.exceptions.FromServerException;
 
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+
 public class AppManager {
     private static AppManager instance;
     
@@ -12,17 +15,14 @@ public class AppManager {
     private boolean myTurn;
     private Client client;
     private GameScene gameScene;
+    private boolean gameCanceled;
 
     public void startGame(int size) {
         System.out.println("Waiting for player to join...");
-        try {
-            myTurn = client.doIStart();
-            gameScene = app.startGame(size);
-            if(!myTurn) {
-                waitForOpponentsMove();
-            }
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+        client.confirmGame();
+        gameScene = app.startGame(size);
+        if(!myTurn) {
+            waitForOpponentsMove();
         }
     }
 
@@ -36,6 +36,15 @@ public class AppManager {
         try {
             System.out.println("Asking client to send move");
             boardState = client.sendMove(i, j);
+            for (int i1 = 0; i1 < 9; i1++)
+            {
+                for (int j1 = 0; j1 < 9; j1++)
+                {
+                    System.out.print(boardState[i][j]);
+                }
+            }
+            System.out.println();
+            System.out.println(boardState);
             myTurn = false;
         } catch (IOException ex) {
             System.err.println("Connection with server failed: " + ex.getMessage());
@@ -47,6 +56,14 @@ public class AppManager {
 
     public void waitForOpponentsMove() {
         client.waitForOpponentsMove();
+    }
+
+    public void waitForGameStart(Dialog<ButtonType> dialog) {
+        client.waitForGameStart(dialog);
+    }
+
+    public void cancelGame() {
+        client.cancelGame();
     }
 
     public void setApp(App app) {
@@ -71,6 +88,14 @@ public class AppManager {
 
     public void setMyTurn(boolean myTurn) {
         this.myTurn = myTurn;
+    }
+
+    public boolean isGameCanceled() {
+        return gameCanceled;
+    }
+
+    public void setGameCanceled(boolean gameCanceled) {
+        this.gameCanceled = gameCanceled;
     }
 
     public GameScene getGameScene() {

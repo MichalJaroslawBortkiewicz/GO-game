@@ -7,11 +7,16 @@ import java.net.Socket;
 
 import com.mycompany.app.client.exceptions.FromServerException;
 
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+
 public class Client {
     Socket socket;
 
     private DataInputStream fromServer;
     private DataOutputStream toServer;
+
+    private GameStartReceiver gameStartReceiver;
 
     private int size;
 
@@ -45,8 +50,29 @@ public class Client {
         thread.start();
     }
 
-    public boolean doIStart() throws IOException {
-        return fromServer.readBoolean();
+    public void waitForGameStart(Dialog<ButtonType> dialog) {
+        gameStartReceiver = new GameStartReceiver(fromServer, dialog);
+        Thread thread = new Thread(gameStartReceiver);
+        thread.start();
+    }
+
+    public void cancelGame() {
+        gameStartReceiver.kill();
+
+        try {
+            toServer.writeBoolean(false);
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    public void confirmGame() {
+        System.out.println("confirm");
+        try {
+            toServer.writeBoolean(true);
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 
     public Client(int size, boolean withBot) throws IOException, FromServerException {
@@ -60,7 +86,8 @@ public class Client {
         toServer.writeBoolean(withBot);
 
         if (fromServer.readBoolean()) {
-            throw new FromServerException(fromServer.readAllBytes());
+            int length = fromServer.readInt();
+            throw new FromServerException(fromServer.readNBytes(length));
         }
     }
 }

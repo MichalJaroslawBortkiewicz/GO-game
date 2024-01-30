@@ -9,12 +9,21 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.layout.GridPane;
 
 public class MenuScene extends Group {
+    Dialog<ButtonType> dialog = new Dialog<ButtonType>();
 
     public MenuScene()
     {
+        dialog.setTitle("Wait");
+        ButtonType type = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        dialog.setContentText("Waiting for another player");
+        dialog.getDialogPane().getButtonTypes().add(type);
+
         final Button gameButton9noBot = new Button("Play 9x9 against Player");
         final Button gameButton13noBot = new Button("Play 13x13 against Player");
         final Button gameButton19noBot = new Button("Play 19x19 against Player");
@@ -55,9 +64,17 @@ public class MenuScene extends Group {
 
         @Override
         public void handle(ActionEvent event) {
+
             try {
                 AppManager.getInstance().setClient(new Client(boardSize, withBot));
-                AppManager.getInstance().startGame(boardSize);
+                AppManager.getInstance().setGameCanceled(true);
+                AppManager.getInstance().waitForGameStart(dialog);
+                System.out.println(dialog.showAndWait());
+                if (AppManager.getInstance().isGameCanceled()) {
+                    AppManager.getInstance().cancelGame();
+                } else {
+                    AppManager.getInstance().startGame(boardSize);
+                }
             } catch (IOException ex) {
                 System.err.println("Connection with server failed: " + ex.getMessage());
             } catch (FromServerException ex) {
