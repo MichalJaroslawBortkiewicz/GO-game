@@ -51,11 +51,23 @@ public class Client {
 
     public void sendProposition(char[][] proposition) {
         try {
+            toServer.writeInt(-1);
+            toServer.writeInt(-1);
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     toServer.writeChar(proposition[i][j]);
                 }
             }
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    public void sendDecision(boolean decision) {
+        try {
+            toServer.writeInt(-1);
+            toServer.writeInt(-1);
+            toServer.writeBoolean(decision);
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }

@@ -29,6 +29,9 @@ public class GameScene extends Group {
     private FieldColor currentColor = FieldColor.E;
     private char [][] proposition;
     Group propositionGroup = new Group();
+
+    private Button acceptButton;
+    private Button declineButton;
     
     public GameScene(int size) {
         this.size = size;
@@ -46,7 +49,7 @@ public class GameScene extends Group {
         board.setStrokeWidth(3);
 
         passButton = new Button("Pass");
-        passButton.setLayoutX(400);
+        passButton.setLayoutX(size * 40 + 30);
         passButton.setLayoutY(30);
         passButton.setOnAction(event -> {
             char[][] boardDataState = AppManager.getInstance().sendMove(-1, -1);
@@ -59,31 +62,40 @@ public class GameScene extends Group {
             }
         });
         resignButton = new Button("Resign");
-        resignButton.setLayoutX(400);
+        resignButton.setLayoutX(size * 40 + 30);
         resignButton.setLayoutY(80);
         resignButton.setOnAction(event -> AppManager.getInstance().surrender());
 
         sendButton = new Button("Send");
-        sendButton.setLayoutX(400);
+        sendButton.setLayoutX(size * 40 + 30);
         sendButton.setLayoutY(30);
         sendButton.setOnAction(event -> AppManager.getInstance().sendProposition(proposition));
         Rectangle rect = new Rectangle(10, 10);
         rect.setFill(Color.WHITE);
         whiteButton = new Button("", rect);
-        whiteButton.setLayoutX(400);
+        whiteButton.setLayoutX(size * 40 + 30);
         whiteButton.setLayoutY(80);
         whiteButton.setOnAction(event -> currentColor = FieldColor.W);
         rect = new Rectangle(10, 10);
         rect.setFill(Color.BLACK);
         blackButton = new Button("", rect);
-        blackButton.setLayoutX(440);
+        blackButton.setLayoutX(size * 40 + 60);
         blackButton.setLayoutY(80);
         blackButton.setOnAction(event -> currentColor = FieldColor.B);
-        eraserButton = new Button(" ");
-        eraserButton.setLayoutX(480);
+        eraserButton = new Button("   ");
+        eraserButton.setLayoutX(size * 40 + 90);
         eraserButton.setLayoutY(80);
         eraserButton.setOnAction(event -> currentColor = FieldColor.E);
         proposition = new char[size][size];
+
+        acceptButton = new Button("Accept");
+        acceptButton.setLayoutX(size * 40 + 30);
+        acceptButton.setLayoutY(30);
+        acceptButton.setOnAction(event -> AppManager.getInstance().sendDecision(true));
+        declineButton = new Button("Decline");
+        declineButton.setLayoutX(size * 40 + 30);
+        declineButton.setLayoutY(80);
+        declineButton.setOnAction(event -> AppManager.getInstance().sendDecision(false));
 
         for(int i = 0; i < size; i++) {
             double start = borderWidth;
@@ -134,6 +146,11 @@ public class GameScene extends Group {
     public void enterProposingMode() {
         getChildren().removeAll(passButton, resignButton);
         getChildren().addAll(sendButton, whiteButton, blackButton, eraserButton, propositionGroup);
+    }
+
+    public void enterJudgeMode() {
+        getChildren().removeAll(passButton, resignButton);
+        getChildren().addAll(propositionGroup);
     }
 
     private final class PropositionField extends Rectangle {

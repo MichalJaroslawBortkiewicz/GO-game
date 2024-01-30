@@ -68,7 +68,11 @@ public class AppManager {
     }
 
     public void enterJudgeMode() {
+        gameScene.enterJudgeMode();
+    }
 
+    public void sendDecision(boolean decision) {
+        client.sendDecision(decision);
     }
 
     public void surrender() {

@@ -1,5 +1,6 @@
 package com.mycompany.app.server;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -12,6 +13,7 @@ public class TwoPlayerSession implements Session {
     private Socket firstPlayer;
     private Socket secondPlayer;
     private DataOutputStream[] playerStream;
+    private DataInputStream[] playerIn;
     private int size;
 
     private boolean gamesON;
@@ -22,6 +24,8 @@ public class TwoPlayerSession implements Session {
     private int x;
     private int y;
     private int player;
+
+    private char[][] proposition;
 
     @Override
     public void run() {
@@ -37,6 +41,8 @@ public class TwoPlayerSession implements Session {
             thread.start();
             playerStream[0] = new DataOutputStream(firstPlayer.getOutputStream());
             playerStream[1] = new DataOutputStream(secondPlayer.getOutputStream());
+            playerIn[0] = new DataInputStream(firstPlayer.getInputStream());
+            playerIn[1] = new DataInputStream(secondPlayer.getInputStream());
             playerStream[0].writeBoolean(true);
             playerStream[1].writeBoolean(false);
             System.out.println("Each player get if he is first");
@@ -72,6 +78,36 @@ public class TwoPlayerSession implements Session {
                         for (int j = 0; j < size; j++) {
                             playerStream[1-player].writeChar('\1');
                             playerStream[player].writeChar('\1');
+                        }
+                    }
+                    r1.gamesOFF();
+                    r2.gamesOFF();
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+                    } catch (InterruptedException ex) {}
+                    if (x == -2) {
+                        // TODO poddanie się podczas proponowania
+                        int currentPlayer = GameManager.getInstance().isWhitePlays() ? 1 : 0;
+                        for (int i = 0; i < size; i++) {
+                            for (int j = 0; j < size; j++) {
+                                playerStream[1-currentPlayer].writeChar('\0');
+                            }
+                        }
+                        break;
+                    }
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            proposition[i][j] = playerIn[player].readChar();
+                            System.out.print(proposition[i][j]);
+                        }
+                        System.out.println();
+                    }
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            System.out.print(proposition[i][j]);
+                            playerStream[1-player].writeChar(proposition[i][j]);
                         }
                     }
                     continue;
@@ -127,6 +163,11 @@ public class TwoPlayerSession implements Session {
         this.player = player;
     }
 
+    @Override
+    public synchronized void setProposition(char[][] proposition) {
+        this.proposition = proposition;
+    }
+
     @SuppressWarnings("PMD.EmptyCatchBlock")
     @Override
     public void endGame() {
@@ -149,7 +190,9 @@ public class TwoPlayerSession implements Session {
             this.secondPlayer = firstPlayer;
         }
         playerStream = new DataOutputStream[2];
+        playerIn = new DataInputStream[2];
         this.size = size;
+        proposition = new char[size][size];
         gamesON = true;
         System.out.println("Two player session created");
     }

@@ -23,8 +23,8 @@ public class App extends Application {
         stage.setScene(menu);
         stage.setX(0);
         stage.setY(5);
-        stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth() / 3);
-        stage.setHeight(Screen.getPrimary().getVisualBounds().getHeight() / 2);
+        stage.setWidth(400);
+        stage.setHeight(400);
         stage.setOnCloseRequest(event -> AppManager.getInstance().surrender());
         //stage.setMaximized(true);
         stage.show();
@@ -39,10 +39,14 @@ public class App extends Application {
             }
         });
         stage.setScene(new Scene(gameScene));
+        stage.setWidth(size * 40 + 150);
+        stage.setHeight(size * 40 + 40);
         return gameScene;
     }
 
     public void endGame() {
+        stage.setWidth(400);
+        stage.setHeight(400);
         stage.setScene(menu);
     }
 

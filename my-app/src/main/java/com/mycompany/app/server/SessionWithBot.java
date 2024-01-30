@@ -35,4 +35,10 @@ public class SessionWithBot implements Session {
         this.player = player;
         this.size = size;
     }
+
+    @Override
+    public void setProposition(char[][] proposition) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setProposition'");
+    }
 }
