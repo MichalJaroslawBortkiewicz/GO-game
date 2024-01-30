@@ -10,17 +10,19 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class MenuScene extends Group {
 
     public MenuScene()
     {
-        final Button gameButton9noBot = new Button("Play 9x9 against Player");
-        final Button gameButton13noBot = new Button("Play 13x13 against Player");
-        final Button gameButton19noBot = new Button("Play 19x19 against Player");
-        final Button gameButton9withBot = new Button("Play 9x9 against Bot");
-        final Button gameButton13withBot = new Button("Play 13x13 against Bot");
-        final Button gameButton19withBot = new Button("Play 19x19 against Bot");
+        final Button gameButton9noBot = new Button("Player  9x9 ");
+        final Button gameButton13noBot = new Button("Player 13x13");
+        final Button gameButton19noBot = new Button("Player 19x19");
+        final Button gameButton9withBot = new Button("Bot  9x9");
+        final Button gameButton13withBot = new Button("Bot 13x13");
+        final Button gameButton19withBot = new Button("Bot 19x19");
 
         gameButton9noBot.setOnAction(new GameButtonHandler(9, false));
         gameButton13noBot.setOnAction(new GameButtonHandler(13, false));
@@ -35,11 +37,11 @@ public class MenuScene extends Group {
         inputGridPane.setVgap(6);
 
         inputGridPane.add(gameButton9noBot, 0, 0);
-        inputGridPane.add(gameButton13noBot, 1, 0);
-        inputGridPane.add(gameButton19noBot, 2, 0);
-        inputGridPane.add(gameButton9withBot, 0, 1);
+        inputGridPane.add(gameButton13noBot, 0, 1);
+        inputGridPane.add(gameButton19noBot, 0, 2);
+        inputGridPane.add(gameButton9withBot, 1, 0);
         inputGridPane.add(gameButton13withBot, 1, 1);
-        inputGridPane.add(gameButton19withBot, 2, 1);
+        inputGridPane.add(gameButton19withBot, 1, 2);
 
         getChildren().add(inputGridPane);
     }

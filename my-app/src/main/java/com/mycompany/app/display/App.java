@@ -21,9 +21,9 @@ public class App extends Application {
         stage.setScene(menu);
         stage.setX(0);
         stage.setY(5);
-        stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-        stage.setHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
-        stage.setMaximized(true);
+        stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth() / 3);
+        stage.setHeight(Screen.getPrimary().getVisualBounds().getHeight() / 2);
+        //stage.setMaximized(true);
         stage.show();
     }
 
