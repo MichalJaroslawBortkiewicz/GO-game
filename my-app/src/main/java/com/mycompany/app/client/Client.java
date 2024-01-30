@@ -81,6 +81,14 @@ public class Client {
         }
     }
 
+    public void closeSocket() {
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
     public Client(int size, boolean withBot) throws IOException, FromServerException {
         this.size = size;
 

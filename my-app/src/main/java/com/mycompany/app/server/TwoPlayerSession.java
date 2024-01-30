@@ -71,8 +71,8 @@ public class TwoPlayerSession implements Session {
                     playerStream[player].writeBoolean(false);
                     for (int i = 0; i < size; i++) {
                         for (int j = 0; j < size; j++) {
-                            playerStream[0].writeChar('\n');
-                            playerStream[1].writeChar('\n');
+                            playerStream[1-player].writeChar('\n');
+                            playerStream[player].writeChar('\n');
                         }
                     }
                     continue;

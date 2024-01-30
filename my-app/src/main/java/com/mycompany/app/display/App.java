@@ -23,6 +23,7 @@ public class App extends Application {
         stage.setY(5);
         stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth() / 3);
         stage.setHeight(Screen.getPrimary().getVisualBounds().getHeight() / 2);
+        stage.setOnCloseRequest(event -> AppManager.getInstance().surrender());
         //stage.setMaximized(true);
         stage.show();
     }

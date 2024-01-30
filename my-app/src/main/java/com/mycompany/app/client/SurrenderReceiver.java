@@ -3,6 +3,10 @@ package com.mycompany.app.client;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import com.mycompany.app.display.AppManager;
+
+import javafx.application.Platform;
+
 public class SurrenderReceiver implements Runnable {
     private DataInputStream input;
 
@@ -10,7 +14,8 @@ public class SurrenderReceiver implements Runnable {
     public void run() {
         try {
             if (input.readBoolean()) {
-                // TODO : opponent surrendered
+                System.out.println("Opponent resigned");
+                Platform.runLater( () -> AppManager.getInstance().endGame());
             }
         } catch (IOException ex) {
             System.err.println(ex.getMessage());

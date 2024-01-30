@@ -58,6 +58,17 @@ public class AppManager {
         return boardState;
     }
 
+    public void surrender() {
+        try {
+            client.sendMove(-2, -2);
+        } catch (IOException ex) {
+            System.err.println("Connection with server failed: " + ex.getMessage());
+        } catch (FromServerException ex) {
+            System.err.println("Server returned exception: " + ex.getMessage());
+        }
+        endGame();
+    }
+
     public void waitForOpponentsMove() {
         client.waitForOpponentsMove();
     }
@@ -108,6 +119,13 @@ public class AppManager {
 
     public GameScene getGameScene() {
         return gameScene;
+    }
+
+    public void endGame() {
+        if (client != null) {
+            client.closeSocket();
+        }
+        app.endGame();
     }
 
     public synchronized static AppManager getInstance() {

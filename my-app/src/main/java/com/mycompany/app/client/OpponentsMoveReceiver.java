@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import com.mycompany.app.display.AppManager;
 
+import javafx.application.Platform;
+
 public class OpponentsMoveReceiver implements Runnable {
     DataInputStream input;
     int size;
@@ -24,10 +26,15 @@ public class OpponentsMoveReceiver implements Runnable {
         }
 
         if (board[0][0] == '\n') {
-            //TODO przeciwnik spasował
+            System.out.println("Opponent passed their turn");
+            AppManager.getInstance().setMyTurn(true);
+            AppManager.getInstance().waitForOpponentsSurrender();
+            return;
         }
         if (board[0][0] == '\0') {
-            //TODO przeciwnik sie poddał
+            System.out.println("Opponent resigned");
+            Platform.runLater( () -> AppManager.getInstance().endGame());
+            return;
         }
 
         AppManager.getInstance().getGameScene().rearrange(board);

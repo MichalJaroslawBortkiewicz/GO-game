@@ -102,7 +102,7 @@ public class Stone {
 
         System.out.println("three");
 
-        if(allyDie || !hasAllies && !enemyDie ){
+        if( (allyDie || !hasAllies) && !enemyDie ){
             for(Stone stone : neighbors){
                 if(stone == null){ continue; }
                 stone.getStoneGroup().addBreath();

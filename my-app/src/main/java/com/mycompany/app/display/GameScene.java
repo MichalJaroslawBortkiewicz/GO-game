@@ -2,6 +2,7 @@ package com.mycompany.app.display;
 
 
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -33,6 +34,19 @@ public class GameScene extends Group {
         board.setStroke(Color.BROWN);
         board.setStrokeWidth(3);
 
+        Button passButton = new Button("Pass");
+        passButton.setLayoutX(400);
+        passButton.setLayoutY(30);
+        passButton.setOnAction(event -> {
+            if (AppManager.getInstance().sendMove(-1, -1) != null) {
+                AppManager.getInstance().waitForOpponentsMove();
+            }
+        });
+        Button resignButton = new Button("Resign");
+        resignButton.setLayoutX(400);
+        resignButton.setLayoutY(80);
+        resignButton.setOnAction(event -> AppManager.getInstance().surrender());
+
         for(int i = 0; i < size; i++) {
             double start = borderWidth;
             double end = start + (size - 1) * gridWidth;
@@ -56,7 +70,7 @@ public class GameScene extends Group {
             }
         }
 
-        getChildren().addAll(board, lines, stones);
+        getChildren().addAll(board, lines, stones, passButton, resignButton);
 
         if(AppManager.getInstance().isMyTurn()){
             playerColor = PlayerColor.BLACK;
@@ -112,12 +126,6 @@ public class GameScene extends Group {
         private void sendMove() {
             char[][] boardDataState = AppManager.getInstance().sendMove(x, y);
             if (boardDataState != null) {
-                if (boardDataState[0][0] == '\n') {
-                    //TODO spasowałem
-                }
-                if (boardDataState[0][0] == '\0') {
-                    //TODO poddałem się
-                }
                 rearrange(boardDataState);
                 AppManager.getInstance().waitForOpponentsMove();
             }
