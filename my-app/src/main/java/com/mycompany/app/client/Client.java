@@ -44,6 +44,11 @@ public class Client {
         return board;
     }
 
+    public void surrender() throws IOException {
+        toServer.writeInt(-2);
+        toServer.writeInt(-2);
+    }
+
     public void waitForOpponentsMove() {
         OpponentsMoveReceiver receiver = new OpponentsMoveReceiver(fromServer, size);
         Thread thread = new Thread(receiver);

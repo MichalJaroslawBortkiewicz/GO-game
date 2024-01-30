@@ -16,6 +16,7 @@ public class AppManager {
     private Client client;
     private GameScene gameScene;
     private boolean gameCanceled;
+    private boolean surrender = false;
 
     public void startGame(int size) {
         System.out.println("Waiting for player to join...");
@@ -60,11 +61,10 @@ public class AppManager {
 
     public void surrender() {
         try {
-            client.sendMove(-2, -2);
+            surrender = true;
+            client.surrender();
         } catch (IOException ex) {
             System.err.println("Connection with server failed: " + ex.getMessage());
-        } catch (FromServerException ex) {
-            System.err.println("Server returned exception: " + ex.getMessage());
         }
         endGame();
     }
@@ -119,6 +119,10 @@ public class AppManager {
 
     public GameScene getGameScene() {
         return gameScene;
+    }
+
+    public boolean isSurrender() {
+        return surrender;
     }
 
     public void endGame() {

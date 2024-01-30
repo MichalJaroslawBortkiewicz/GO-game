@@ -36,6 +36,10 @@ public class GameManager {
         return blackPoints;
     }
 
+    public boolean isWhitePlays() {
+        return whitePlays;
+    }
+
     public void startGame(int size) {
         board = new Board(size);
         whitePoints = 6;

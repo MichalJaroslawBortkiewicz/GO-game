@@ -51,17 +51,15 @@ public class TwoPlayerSession implements Session {
             System.out.println("Session notified");
             try {
                 if (x == -2) {
-                    playerStream[player].writeBoolean(true);
-                    playerStream[player].writeBoolean(false);
-                    for (int i = 0; i < size; i++) {
-                        for (int j = 0; j < size; j++) {
-                            playerStream[1-player].writeChar('\0');
+                    int currentPlayer = GameManager.getInstance().isWhitePlays() ? 1 : 0;
+                    if (currentPlayer == player) {
+                        for (int i = 0; i < size; i++) {
+                            for (int j = 0; j < size; j++) {
+                                playerStream[1-currentPlayer].writeChar('\0');
+                            }
                         }
-                    }
-                    for (int i = 0; i < size; i++) {
-                        for (int j = 0; j < size; j++) {
-                            playerStream[player].writeChar('\0');
-                        }
+                    } else {
+                        playerStream[currentPlayer].writeBoolean(true);
                     }
                     break;
                 }

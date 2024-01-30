@@ -32,7 +32,9 @@ public class OpponentsMoveReceiver implements Runnable {
             return;
         }
         if (board[0][0] == '\0') {
-            System.out.println("Opponent resigned");
+            if (!AppManager.getInstance().isSurrender()) {
+                System.out.println("Opponent resigned");
+            }
             Platform.runLater( () -> AppManager.getInstance().endGame());
             return;
         }
