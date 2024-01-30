@@ -30,9 +30,13 @@ CREATE TABLE IF NOT EXISTS game_moves (
 DELIMITER $$
 
 CREATE PROCEDURE IF NOT EXISTS new_game(OUT amogus INT)
-BEGIN    
+BEGIN
+	START TRANSACTION;
+
 	INSERT INTO games (points_difference, black_won) VALUES (0, NULL);
 	SELECT LAST_INSERT_ID() INTO amogus;
+	
+	COMMIT;
 END $$
 
 DELIMITER ;
