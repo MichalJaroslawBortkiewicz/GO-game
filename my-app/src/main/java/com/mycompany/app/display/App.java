@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {

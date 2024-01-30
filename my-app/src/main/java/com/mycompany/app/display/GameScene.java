@@ -3,7 +3,6 @@ package com.mycompany.app.display;
 
 import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -150,19 +149,15 @@ public class GameScene extends Group {
 
     public void enterJudgeMode() {
         getChildren().removeAll(passButton, resignButton);
-        getChildren().addAll(propositionGroup);
+        getChildren().addAll(acceptButton, declineButton, propositionGroup);
     }
 
     private final class PropositionField extends Rectangle {
-        int x;
-        int y;
 
         FieldColor fieldColor = FieldColor.E;
 
         public PropositionField(int x, int y, double r) {
-            this.x = x;
-            this.y = y;
-
+            
             setHeight(2.4*r);
             setWidth(2.4*r);
             setLayoutX(borderWidth + x * gridWidth - 1.2*r);
