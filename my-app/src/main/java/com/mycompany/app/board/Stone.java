@@ -47,8 +47,6 @@ public class Stone {
         Boolean allyDie = false;
         Boolean enemyDie = false;
         Boolean hasAllies = false;
-
-        System.out.println("zero");
         
         for(Direction direction : Direction.values()){
             Stone stone;
@@ -68,8 +66,6 @@ public class Stone {
             if(stone.getColor().equals(color)){ hasAllies = true; }
         }
 
-        System.out.println("one");
-
         stoneGroup = new StoneGroup(this);
 
         if(breaths > 0){
@@ -82,8 +78,6 @@ public class Stone {
 
                 stoneGroup.extend(stone.getStoneGroup());
             }
-
-            System.out.println("two");
 
             return;
         }
@@ -100,9 +94,8 @@ public class Stone {
             else{ enemyDie = true; }
         }
 
-        System.out.println("three");
 
-        if( (allyDie || !hasAllies) && !enemyDie ){
+        if((allyDie || !hasAllies) && !enemyDie ){
             for(Stone stone : neighbors){
                 if(stone == null){ continue; }
                 stone.getStoneGroup().addBreath();
@@ -111,7 +104,6 @@ public class Stone {
             throw new IncorrectStonePlacementException();
         }
 
-        System.out.println("three and a half");
 
         for(int i = 0; i < 4; i++){
             Stone stone = neighbors[i];
@@ -121,7 +113,6 @@ public class Stone {
             stone.addNeighbor(this, Direction.valueOf(i ^ 1));
         }
 
-        System.out.println("four");
 
         for(int i = 0; i < 4; i++){
             Stone stone = neighbors[i];
