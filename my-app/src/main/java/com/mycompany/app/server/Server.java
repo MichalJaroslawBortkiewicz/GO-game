@@ -64,7 +64,8 @@ public final class Server {
                 }
                 if (type == 1) {
                     System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're playing with bot. Their IP address is " + player.getLocalAddress().getHostAddress());
-                    Session task = new SessionWithBot(player, size);
+                    IDataBaseManager dataBaseManager = new DataBaseManager(dbURL, login, password);
+                    Session task = new SessionWithBot(player, size, dataBaseManager);
                     System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...");
                     Thread thread = new Thread(task);
                     thread.start();

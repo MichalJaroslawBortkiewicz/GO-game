@@ -58,6 +58,19 @@ public class GameManager {
         nextPlayer();
     }
 
+    public boolean addStoneAsBot(StoneColor botColor) {
+        nextPlayer();
+        for (int i = 0; i < 10; i++) {
+            try {
+                board.addStone((int)(Math.random() * board.getSize()), (int)(Math.random() * board.getSize()), botColor);
+                return true;
+            } catch (IncorrectStonePlacementException ex) {
+                System.out.println("Trying again");
+            }
+        }
+        return false;
+    }
+
     public void nextPlayer() {
         whitePlays = !whitePlays;
     }
