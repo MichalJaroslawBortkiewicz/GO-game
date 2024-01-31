@@ -80,6 +80,8 @@ public class TwoPlayerSession implements Session {
                 }
                 GameManager.getInstance().addStone(x, y, player);
                 if (x == -1 && passed) {
+                    System.out.print(playerStream[0].size());
+                    System.out.print(playerStream[1].size());
                     dataBaseManager.saveMove("PASS");
                     playerStream[player].writeBoolean(false);
                     playerStream[player].writeBoolean(false);
@@ -118,6 +120,43 @@ public class TwoPlayerSession implements Session {
                             System.out.print(proposition[i][j]);
                             playerStream[1-player].writeChar(proposition[i][j]);
                         }
+                    }
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+                    } catch (InterruptedException ex) {}
+                    boolean accept = playerIn[player].readBoolean();
+                    if (accept) {
+                        int black = 0;
+                        int white = 0;
+                        for (int i = 0; i < size; i++) {
+                            for (int j = 0; j < size; j++) {
+                                if (proposition[i][j] == 'B') {
+                                    black++;
+                                } else if (proposition[i][j] == 'W') {
+                                    white++;
+                                }
+                            }
+                        }
+                        GameManager.getInstance().addBlackPoints(black);
+                        GameManager.getInstance().addWhitePoints(white);
+                        System.out.println("accept");
+                        playerStream[0].writeBoolean(false);
+                        playerStream[1].writeBoolean(false);
+                        int whiteHandicup = GameManager.getInstance().getWhitePoints() - GameManager.getInstance().getBlackPoints();
+                        playerStream[0].writeInt(-whiteHandicup);
+                        playerStream[1].writeInt(whiteHandicup);
+                        break;
+                    } else {
+                        playerStream[1-player].writeBoolean(true);
+                        GameManager.getInstance().nextPlayer();
+                        r1 = new Receiver(this, firstPlayer, 0);
+                        Thread thread = new Thread(r1);
+                        thread.start();
+                        r2 = new Receiver(this, secondPlayer, 1);
+                        thread = new Thread(r2);
+                        thread.start();
                     }
                     continue;
                 }

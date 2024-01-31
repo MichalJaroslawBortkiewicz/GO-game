@@ -16,7 +16,7 @@ public final class Server {
 
     private String dbURL = "jdbc:mysql://localhost:3306/go_games";
     private String login = "root";
-    private String password = "password";
+    private String password = "Rodzina4";
 
     public void cancelSession(int index) {
         sessions[index] = 0;

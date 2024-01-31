@@ -63,14 +63,18 @@ public class Client {
         }
     }
 
-    public void sendDecision(boolean decision) {
+    public int sendDecision(boolean decision) {
         try {
             toServer.writeInt(-1);
             toServer.writeInt(-1);
             toServer.writeBoolean(decision);
+            System.out.println("send decision");
+            return fromServer.readInt();
         } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
+        System.out.println("problem");
+        return 0;
     }
 
     public void waitForOpponentsMove() {
@@ -87,6 +91,12 @@ public class Client {
 
     public void waitForOpponentsSurrender() {
         SurrenderReceiver receiver = new SurrenderReceiver(fromServer);
+        Thread thread = new Thread(receiver);
+        thread.start();
+    }
+
+    public void waitForDecision() {
+        FinalReceiver receiver = new FinalReceiver(fromServer);
         Thread thread = new Thread(receiver);
         thread.start();
     }

@@ -1,6 +1,8 @@
 package com.mycompany.app.display;
 
 
+import com.mycompany.app.board.GameManager;
+
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
@@ -28,14 +30,18 @@ public class GameScene extends Group {
     private Button eraserButton;
     private FieldColor currentColor = FieldColor.E;
     private char [][] proposition;
-    Group propositionGroup = new Group();
+    private PropositionField[][] propositionFields;
+    private Group propositionGroup = new Group();
+    private boolean propositionMode = false;
 
     private Button acceptButton;
     private Button declineButton;
+    private boolean judgeMode = false;
     
     public GameScene(int size) {
         this.size = size;
         this.boardData = new Field[size][size];
+        this.propositionFields = new PropositionField[size][size];
         
         int boardLength = 2 * borderWidth + gridWidth * (size - 1);
 
@@ -61,7 +67,6 @@ public class GameScene extends Group {
             if (boardDataState != null) {
                 if (boardDataState[0][0] == '\1') {
                     AppManager.getInstance().enterJudgeMode();
-                    // TODO double pass
                 }
                 AppManager.getInstance().waitForOpponentsMove();
             }
@@ -74,7 +79,13 @@ public class GameScene extends Group {
         sendButton = new Button("Send");
         sendButton.setLayoutX(size * 40 + 30);
         sendButton.setLayoutY(30);
-        sendButton.setOnAction(event -> AppManager.getInstance().sendProposition(proposition));
+        sendButton.setOnAction(event -> {
+            if (propositionMode) {
+                AppManager.getInstance().sendProposition(proposition);
+                propositionMode = false;
+                AppManager.getInstance().waitForDecision();
+            }
+        });
         Rectangle rect = new Rectangle(10, 10);
         rect.setFill(Color.WHITE);
         whiteButton = new Button("", rect);
@@ -96,11 +107,21 @@ public class GameScene extends Group {
         acceptButton = new Button("Accept");
         acceptButton.setLayoutX(size * 40 + 30);
         acceptButton.setLayoutY(30);
-        acceptButton.setOnAction(event -> AppManager.getInstance().sendDecision(true));
+        acceptButton.setOnAction(event -> {
+            if (judgeMode && AppManager.getInstance().isMyTurn()) {
+                System.out.println(AppManager.getInstance().sendDecision(true));
+                AppManager.getInstance().endGame();
+            }
+        });
         declineButton = new Button("Decline");
         declineButton.setLayoutX(size * 40 + 30);
         declineButton.setLayoutY(80);
-        declineButton.setOnAction(event -> AppManager.getInstance().sendDecision(false));
+        declineButton.setOnAction(event -> {
+            if (judgeMode && AppManager.getInstance().isMyTurn()) {
+                AppManager.getInstance().sendDecision(false);
+                exitJudgeMode();
+            }
+        });
 
         for(int i = 0; i < size; i++) {
             double start = borderWidth;
@@ -125,6 +146,7 @@ public class GameScene extends Group {
                 
                 PropositionField proField = new PropositionField(i, j, 0.4 * gridWidth);
                 propositionGroup.getChildren().add(proField);
+                propositionFields[i][j] = proField;
                 proposition[i][j] = 'E';
             }
         }
@@ -140,6 +162,16 @@ public class GameScene extends Group {
     }
 
     public void rearrange(char[][] boardDataState) {
+        if (judgeMode) {
+            for(int i = 0; i < size; i++) {
+                for(int j = 0; j < size; j++) {
+                    String colorName = String.valueOf(boardDataState[i][j]);
+                    propositionFields[i][j].changeColor(colorName);
+                }
+            }
+            return;
+        }
+
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
                 String colorName = String.valueOf(boardDataState[i][j]);
@@ -151,11 +183,35 @@ public class GameScene extends Group {
     public void enterProposingMode() {
         getChildren().removeAll(passButton, resignButton);
         getChildren().addAll(sendButton, whiteButton, blackButton, eraserButton, propositionGroup);
+        propositionMode = true;
+    }
+
+    public void exitPropositionMode() {
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                propositionFields[i][j].changeColor("E");
+            }
+        }
+        getChildren().removeAll(sendButton, whiteButton, blackButton, eraserButton, propositionGroup);
+        getChildren().addAll(passButton, resignButton);
+        propositionMode = false;
     }
 
     public void enterJudgeMode() {
         getChildren().removeAll(passButton, resignButton);
         getChildren().addAll(acceptButton, declineButton, propositionGroup);
+        judgeMode = true;
+    }
+
+    public void exitJudgeMode() {
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                propositionFields[i][j].changeColor("E");
+            }
+        }
+        getChildren().removeAll(acceptButton, declineButton, propositionGroup);
+        getChildren().addAll(passButton, resignButton);
+        judgeMode = false;
     }
 
     private final class PropositionField extends Rectangle {
@@ -171,15 +227,26 @@ public class GameScene extends Group {
             setFill(Color.TRANSPARENT);
             setOpacity(0.5);
             setOnMouseDragEntered(event -> {
+                if (!propositionMode) {
+                    return;
+                }
                 fieldColor = currentColor;
                 setFill(fieldColor.getColor());
                 proposition[x][y] = fieldColor.toChar();
             });
             setOnMouseClicked(event -> {
+                if (!propositionMode) {
+                    return;
+                }
                 fieldColor = currentColor;
                 setFill(fieldColor.getColor());
                 proposition[x][y] = fieldColor.toChar();
             });
+        }
+        
+        private void changeColor(String colorName){
+            fieldColor = FieldColor.valueOf(colorName);
+            setFill(fieldColor.getColor());
         }
     }
 

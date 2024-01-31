@@ -63,6 +63,10 @@ public class AppManager {
         gameScene.enterProposingMode();
     }
 
+    public void exitPropositionMode() {
+        gameScene.exitPropositionMode();
+    }
+
     public void sendProposition(char[][] proposition) {
         client.sendProposition(proposition);
     }
@@ -71,8 +75,8 @@ public class AppManager {
         gameScene.enterJudgeMode();
     }
 
-    public void sendDecision(boolean decision) {
-        client.sendDecision(decision);
+    public int sendDecision(boolean decision) {
+        return client.sendDecision(decision);
     }
 
     public void surrender() {
@@ -97,6 +101,10 @@ public class AppManager {
 
     public void waitForOpponentsSurrender() {
         client.waitForOpponentsSurrender();
+    }
+
+    public void waitForDecision() {
+        client.waitForDecision();
     }
 
     public void cancelGame() {
