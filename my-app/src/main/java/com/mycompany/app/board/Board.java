@@ -13,7 +13,7 @@ public class Board {
 
     Board (int size){
         this.size = size;
-        this.board = new Stone[20][20];
+        this.board = new Stone[size][size];
     }
 
 
