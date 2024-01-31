@@ -7,7 +7,8 @@ USE go_games;
 
 CREATE TABLE IF NOT EXISTS games (
 	game_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	points_difference TINYINT UNSIGNED NOT NULL,
+	board_size TINYINT UNSIGNED,
+	points_difference TINYINT UNSIGNED,
 	black_won BOOLEAN,
 	
 	
@@ -33,7 +34,7 @@ CREATE PROCEDURE IF NOT EXISTS new_game(OUT amogus INT)
 BEGIN
 	START TRANSACTION;
 
-	INSERT INTO games (points_difference, black_won) VALUES (0, NULL);
+	INSERT INTO games (board_size, points_difference, black_won) VALUES (NULL, NULL, NULL);
 	SELECT LAST_INSERT_ID() INTO amogus;
 	
 	COMMIT;

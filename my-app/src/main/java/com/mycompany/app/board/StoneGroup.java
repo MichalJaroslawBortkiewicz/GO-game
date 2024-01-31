@@ -89,7 +89,6 @@ public class StoneGroup {
 
     public int getBreaths(){
         return breaths;
-
     }
     
 

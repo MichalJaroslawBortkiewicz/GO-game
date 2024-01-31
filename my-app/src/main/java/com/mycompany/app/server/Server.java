@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Date;
 
 import com.mycompany.app.database.IDataBaseManager;
+import com.mycompany.app.database.WrongGameNumberException;
 import com.mycompany.app.database.DataBaseManager;
 
 
@@ -71,13 +72,19 @@ public final class Server {
                     thread.start();
                     outputStream.writeBoolean(false);
                 } else if (type == 2) {
-                    //TODO : game from database
-                    System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're replaying game from database. Their IP address is " + player.getLocalAddress().getHostAddress());
-                    Session task = new SessionFromDatabase(player, size);
-                    System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...");
-                    Thread thread = new Thread(task);
-                    thread.start();
-                    outputStream.writeBoolean(false);
+                    //TODO: implement game changeing
+                    try {
+                        IDataBaseManager dataBaseManager = new DataBaseManager(dbURL, login, password, 1);
+                        System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're replaying game from database. Their IP address is " + player.getLocalAddress().getHostAddress());
+                        Session task = new SessionFromDatabase(player, size, dataBaseManager);
+                        System.out.println(new Date() + ":     Starting a thread for session " + sessionNum++ + "...");
+                        Thread thread = new Thread(task);
+                        thread.start();
+                        outputStream.writeBoolean(false);
+                        
+                    } catch (WrongGameNumberException ex) {
+                        outputStream.writeBoolean(true);
+                    }
                 }
                 else if (sessions[index] == 0) {
                     System.out.println(new Date() + ":     first player joined session " + sessionNum + ". Their IP address is " + player.getLocalAddress().getHostAddress());
