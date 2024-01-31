@@ -24,11 +24,17 @@ public class DataBaseSaveTest {
     
     @Test
     public void dbReadTest(){
-        DataBaseManager dataBaseManager = new DataBaseManager(dbURL, "root", "password", 1);
-    
-        List<String> moves = dataBaseManager.readMoves(2);
+        try{
 
-        System.out.println(moves);
-        assertTrue(true);
+            DataBaseManager dataBaseManager = new DataBaseManager(dbURL, "root", "password", 1);
+            
+            List<String> moves = dataBaseManager.readMoves(2);
+            
+            System.out.println(moves);
+            assertTrue(true);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

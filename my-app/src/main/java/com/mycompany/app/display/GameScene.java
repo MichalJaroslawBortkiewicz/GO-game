@@ -4,7 +4,6 @@ package com.mycompany.app.display;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -45,8 +44,6 @@ public class GameScene extends Group {
         Rectangle background = new Rectangle(Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
         background.setFill(Color.DARKKHAKI);
 
-        
-
 
         Rectangle board = new Rectangle(boardLength, boardLength);
         board.setFill(Color.KHAKI);
@@ -66,6 +63,7 @@ public class GameScene extends Group {
                 AppManager.getInstance().waitForOpponentsMove();
             }
         });
+        
         resignButton = new Button("Resign");
         resignButton.setLayoutX(size * 40 + 30);
         resignButton.setLayoutY(80);
@@ -75,28 +73,35 @@ public class GameScene extends Group {
         sendButton.setLayoutX(size * 40 + 30);
         sendButton.setLayoutY(30);
         sendButton.setOnAction(event -> AppManager.getInstance().sendProposition(proposition));
+        
         Rectangle rect = new Rectangle(10, 10);
         rect.setFill(Color.WHITE);
+        
         whiteButton = new Button("", rect);
         whiteButton.setLayoutX(size * 40 + 30);
         whiteButton.setLayoutY(80);
         whiteButton.setOnAction(event -> currentColor = FieldColor.W);
+        
         rect = new Rectangle(10, 10);
         rect.setFill(Color.BLACK);
+        
         blackButton = new Button("", rect);
         blackButton.setLayoutX(size * 40 + 60);
         blackButton.setLayoutY(80);
         blackButton.setOnAction(event -> currentColor = FieldColor.B);
+        
         eraserButton = new Button("   ");
         eraserButton.setLayoutX(size * 40 + 90);
         eraserButton.setLayoutY(80);
         eraserButton.setOnAction(event -> currentColor = FieldColor.E);
+        
         proposition = new char[size][size];
 
         acceptButton = new Button("Accept");
         acceptButton.setLayoutX(size * 40 + 30);
         acceptButton.setLayoutY(30);
         acceptButton.setOnAction(event -> AppManager.getInstance().sendDecision(true));
+        
         declineButton = new Button("Decline");
         declineButton.setLayoutX(size * 40 + 30);
         declineButton.setLayoutY(80);
@@ -236,33 +241,4 @@ public class GameScene extends Group {
 
         }
     }
-
-    private enum FieldColor{
-        B(Color.BLACK),
-        W(Color.WHITE),
-        E(Color.TRANSPARENT);
-
-        private Paint color;
-
-        FieldColor(Color color){
-            this.color = color;
-        }
-
-        public Paint getColor() {
-            return color;
-        }
-
-        public char toChar() {
-            if (FieldColor.B.equals(this)){
-                return 'B';
-            }
-            if (FieldColor.W.equals(this)){
-                return 'W';
-            }
-            if (FieldColor.E.equals(this)){
-                return 'E';
-            }
-            return '\0';
-        }
-    } 
 }

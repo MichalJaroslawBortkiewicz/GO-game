@@ -22,13 +22,15 @@ public class DataBaseManager implements IDataBaseManager{
     private final static String callQuery = "CALL new_game(?)";
     private final static String updateQuery = "UPDATE games SET board_size = ?, points_difference = ?, black_won = ? WHERE game_id = ?";
     private final static String readQuery = "SELECT `move` FROM game_moves WHERE game_id = ? ORDER BY move_nr ASC";
-
+    private final static String sizeQuery = "SELECT board_size FROM games WHERE game_id = ?";
     
     protected int gameNr;
     protected int moveNr = 1;
 
+    private int size;
 
-    public DataBaseManager(String dbURL, String login, String password, int gameNr){
+
+    public DataBaseManager(String dbURL, String login, String password, int gameNr) throws WrongGameNumberException{
         this.dbURL = dbURL;
         this.login = login;
         this.password = password;
@@ -36,6 +38,8 @@ public class DataBaseManager implements IDataBaseManager{
         connect();
 
         this.gameNr = gameNr;
+
+        check();
     }
 
     public DataBaseManager(String dbURL, String login, String password){
@@ -59,6 +63,19 @@ public class DataBaseManager implements IDataBaseManager{
             connection = DriverManager.getConnection(dbURL, login, password);
         }
         catch(SQLException ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    private void check() throws WrongGameNumberException{
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sizeQuery)){
+            preparedStatement.setInt(1, gameNr);
+            
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                if(!resultSet.next()){ throw new WrongGameNumberException(); }
+            }
+
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
@@ -139,4 +156,46 @@ public class DataBaseManager implements IDataBaseManager{
 
         return moves;
     }
+
+
+    public void getSizeFromDB() {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sizeQuery)){
+            preparedStatement.setInt(1, gameNr);
+            
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                resultSet.next();
+                size = resultSet.getInt(1);
+                System.out.println("SIZE" + size);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    public int getSize(){
+        return size;
+    }
+
+
+    public void setGameNr(int gameNr) throws WrongGameNumberException{
+        int oldGameNr = this.gameNr;
+        this.gameNr = gameNr;
+
+        try {
+            check();
+            getSizeFromDB();
+            return;
+        } catch (WrongGameNumberException ex) {
+            this.gameNr = oldGameNr;
+        }
+
+        throw new WrongGameNumberException();
+    }
+
+    public int getGameNr(){
+        return gameNr;
+    }
+
 }

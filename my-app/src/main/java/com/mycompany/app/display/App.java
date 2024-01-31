@@ -25,12 +25,27 @@ public class App extends Application {
         stage.setWidth(400);
         stage.setHeight(400);
         stage.setOnCloseRequest(event -> AppManager.getInstance().surrender());
-        //stage.setMaximized(true);
         stage.show();
+    }
+
+    public DataBaseScene startDataBase(int size){
+        DataBaseScene dataBaseScene = new DataBaseScene(size);
+
+        stage.setScene(new Scene(dataBaseScene));
+        stage.setWidth(size * 40 + 150);
+        stage.setHeight(size * 40 + 40);
+        return dataBaseScene;
+    }
+
+    public void endDataBase() {
+        stage.setWidth(400);
+        stage.setHeight(400);
+        stage.setScene(menu);
     }
 
     public GameScene startGame(int size) {
         GameScene gameScene = new GameScene(size);
+        
         gameScene.addEventFilter(MouseEvent.DRAG_DETECTED , new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

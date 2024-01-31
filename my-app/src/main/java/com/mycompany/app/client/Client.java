@@ -44,6 +44,41 @@ public class Client {
         return board;
     }
 
+    public char[][] sendMoveNr (int moveNr) throws IOException, FromServerException{
+        toServer.writeBoolean(true);
+        toServer.writeInt(moveNr);
+
+        if(fromServer.readBoolean()){
+            throw new FromServerException();
+        }
+        
+        System.out.println(size);
+        char[][] board = new char[size][size];
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                board[i][j] = fromServer.readChar();
+            }
+        }
+
+        return board;
+    }
+
+    public int prevGame() throws IOException{
+        toServer.writeBoolean(false);
+        toServer.writeBoolean(false);
+
+        size = fromServer.readInt();
+        return size;
+    }
+
+    public int nextGame() throws IOException{
+        toServer.writeBoolean(false);
+        toServer.writeBoolean(true);
+
+        size = fromServer.readInt();
+        return size;
+    }
+
     public void surrender() throws IOException {
         toServer.writeInt(-2);
         toServer.writeInt(-2);

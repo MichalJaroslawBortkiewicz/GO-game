@@ -7,4 +7,7 @@ public interface IDataBaseManager{
     void saveGame(int boardSize, int pointDifference, boolean blackWon);
     void saveMove(String move);
     List<String> readMoves(int moveNr);
+    int getGameNr();
+    void setGameNr(int gameNr) throws WrongGameNumberException;
+    int getSize();
 }

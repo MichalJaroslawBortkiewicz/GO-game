@@ -30,6 +30,10 @@ public class AppManager {
         }
     }
 
+    public void startDataBase(int size){
+        app.startDataBase(size);
+    }
+
     @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
     public char[][] sendMove(int i, int j)
     {
@@ -73,6 +77,28 @@ public class AppManager {
 
     public void sendDecision(boolean decision) {
         client.sendDecision(decision);
+    }
+
+    public char[][] sendMoveNr(int moveNr) throws IOException, FromServerException{
+        return client.sendMoveNr(moveNr);
+    }
+
+    public int nextGame(){
+        try{
+            return client.nextGame();
+        }
+        catch(IOException ex){
+            return -1;
+        }
+    }
+
+    public int prevGame(){
+        try{
+            return client.prevGame();
+        }
+        catch(IOException ex){
+            return -1;
+        }
     }
 
     public void surrender() {
