@@ -10,10 +10,14 @@ public class Board {
     //List<StoneGroup> stoneGroups = new ArrayList<StoneGroup>();
     private int size;
     private Stone board[][];
+    private char antiKo[][];
+    private char antiKoBuffor[][];
 
     Board (int size){
         this.size = size;
         this.board = new Stone[size][size];
+        antiKo = getSimplifiedBoard();
+        antiKoBuffor = getSimplifiedBoard();
     }
 
 
@@ -26,6 +30,47 @@ public class Board {
         Stone stone = new Stone(x, y, color, this);
         System.out.println("new Stone");
         board[x][y] = stone;
+
+        char[][] simple = getSimplifiedBoard();
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (simple[i][j] != antiKo[i][j]) {
+                    for (int k = 0; k < size; k++) {
+                        for (int l = 0; l < size; l++) {
+                            antiKo[k][l] = antiKoBuffor[k][l];
+                            antiKoBuffor[k][l] = simple[k][l];
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                removeStone(i, j);
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (antiKoBuffor[i][j] == 'B') {
+                    stone = new Stone(i, j, StoneColor.BLACK, this);
+                    board[i][j] = stone;
+                } else if (antiKoBuffor[i][j] == 'W') {
+                    stone = new Stone(i, j, StoneColor.WHITE, this);
+                    board[i][j] = stone;
+                }
+            }
+            System.out.println();
+        }
+        for (int k = 0; k < size; k++) {
+            for (int l = 0; l < size; l++) {
+                antiKo[k][l] = antiKoBuffor[k][l];
+                antiKoBuffor[k][l] = simple[k][l];
+            }
+        }
+        throw new IncorrectStonePlacementException();
     }
 
 

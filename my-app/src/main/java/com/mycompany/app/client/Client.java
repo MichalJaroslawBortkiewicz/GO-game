@@ -69,7 +69,9 @@ public class Client {
             toServer.writeInt(-1);
             toServer.writeBoolean(decision);
             System.out.println("send decision");
-            return fromServer.readInt();
+            if (decision) {
+                return fromServer.readInt();
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -149,6 +149,7 @@ public class TwoPlayerSession implements Session {
                         playerStream[1].writeInt(whiteHandicup);
                         break;
                     } else {
+                        passed = false;
                         playerStream[1-player].writeBoolean(true);
                         GameManager.getInstance().nextPlayer();
                         r1 = new Receiver(this, firstPlayer, 0);
@@ -187,7 +188,7 @@ public class TwoPlayerSession implements Session {
                 }
             } catch (IncorrectStonePlacementException | NotYourTurnException ex) {
                 try {
-                    playerStream[player].writeBoolean(true);
+                    playerStream[player].writeBoolean(false);
                     playerStream[player].writeBoolean(true);
                     playerStream[player].writeInt(ex.getMessage().getBytes().length);
                     playerStream[player].writeBytes(ex.getMessage());
