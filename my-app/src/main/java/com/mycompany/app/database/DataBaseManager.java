@@ -20,7 +20,7 @@ public class DataBaseManager implements IDataBaseManager{
 
     private final static String insertQuery = "INSERT INTO game_moves (game_id, move_nr, `move`) VALUES (?, ?, ?)";
     private final static String callQuery = "CALL new_game(?)";
-    private final static String updateQuery = "UPDATE game_moves SET point_difference = ?, black_won = ? WHERE game_id = ? ";
+    private final static String updateQuery = "UPDATE games SET board_size = ?, points_difference = ?, black_won = ? WHERE game_id = ?";
     private final static String readQuery = "SELECT `move` FROM game_moves WHERE game_id = ? ORDER BY move_nr ASC";
 
     
@@ -99,11 +99,21 @@ public class DataBaseManager implements IDataBaseManager{
     }
 
     @Override
-    public void saveGame(int pointDifference, boolean blackWon){
+    public void saveGame(int boardSize, int pointDifference, boolean blackWon){
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)){
-            preparedStatement.setInt(1, pointDifference);
-            preparedStatement.setBoolean(2, blackWon);
-            preparedStatement.setInt(3, gameNr);
+            preparedStatement.setInt(1, boardSize);
+
+            if(pointDifference == -1){
+                preparedStatement.setNull(2, Types.INTEGER);
+            }
+            else {
+                preparedStatement.setInt(2, pointDifference);
+            }
+
+            preparedStatement.setBoolean(3, blackWon);
+            preparedStatement.setInt(4, gameNr);
+
+            preparedStatement.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

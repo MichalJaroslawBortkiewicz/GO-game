@@ -67,11 +67,13 @@ public class TwoPlayerSession implements Session {
                                 playerStream[1-currentPlayer].writeChar('\0');
                             }
                         }
+
                     } else {
                         dataBaseManager.saveMove("NULL");
                         playerStream[currentPlayer].writeBoolean(true);
                     }
-
+                    
+                    dataBaseManager.saveGame(size,-1, player == 1);
                     dataBaseManager.saveMove("FF");
 
                     break;
