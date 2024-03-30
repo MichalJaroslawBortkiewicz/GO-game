@@ -17,7 +17,7 @@ public final class Server {
 
     private String dbURL = "jdbc:mysql://localhost:3306/go_games";
     private String login = "root";
-    private String password = "Rodzina4";
+    private String password = "password";
 
     public void cancelSession(int index) {
         sessions[index] = 0;
@@ -72,7 +72,6 @@ public final class Server {
                     thread.start();
                     outputStream.writeBoolean(false);
                 } else if (type == 2) {
-                    //TODO: implement game changeing
                     try {
                         IDataBaseManager dataBaseManager = new DataBaseManager(dbURL, login, password, 1);
                         System.out.println(new Date() + ":     Player joined session " + sessionNum + " and they're replaying game from database. Their IP address is " + player.getLocalAddress().getHostAddress());

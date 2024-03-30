@@ -99,7 +99,6 @@ public class TwoPlayerSession implements Session {
                         }
                     } catch (InterruptedException ex) {}
                     if (x == -2) {
-                        // TODO poddanie się podczas proponowania
                         int currentPlayer = GameManager.getInstance().isWhitePlays() ? 1 : 0;
                         for (int i = 0; i < size; i++) {
                             for (int j = 0; j < size; j++) {
@@ -147,7 +146,15 @@ public class TwoPlayerSession implements Session {
                         int whiteHandicup = GameManager.getInstance().getWhitePoints() - GameManager.getInstance().getBlackPoints();
                         playerStream[0].writeInt(-whiteHandicup);
                         playerStream[1].writeInt(whiteHandicup);
+                         
+                        if(whiteHandicup >= 0){
+                            dataBaseManager.saveGame(size, whiteHandicup, false);
+                        }
+                        else{
+                            dataBaseManager.saveGame(size, -whiteHandicup, true);
+                        }
                         break;
+
                     } else {
                         passed = false;
                         playerStream[1-player].writeBoolean(true);

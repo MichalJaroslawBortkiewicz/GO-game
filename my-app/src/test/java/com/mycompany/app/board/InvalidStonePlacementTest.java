@@ -107,7 +107,6 @@ public class InvalidStonePlacementTest extends StoneTestHelper{
             board.addStone(2, 1, white);
             board.addStone(1, 2, black);
             board.addStone(2, 2, black);
-            
             board.addStone(1, 1, white);
             
             assertTrue( false );
